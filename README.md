@@ -79,11 +79,11 @@ sh AMOA-SEQ.sh -e COM-output -i /home/ampere/slee/COMICON-Projet-2022/COM -f AGG
 •	out.{organism}.ASVs.counts.tsv: ASV count table from different samples
 •	correct.{organism}.ASVs.fa: selected ASVs according to expected amplicon size (option -t) 
 •	correct.{organism}.ASVs.counts.tsv: selected ASV count table from different samples
-•	diamond.output.{organism}.ASVs.tsv; 
-•	besthit.diamond.output.{organism}.ASVs.tsv: 
-•	diamond.output.curateddb.{organism}.ASVs.tsv  
-•	besthit.diamond.output.curateddb.{organism}.ASVs.tsv:  
-•	annotated.{organism}.ASVs.fa: ASVs matched to AMOA database. Those are confident and genuine AMOA sequences. 
+•	diamond.output.{organism}.ASVs.tsv: annotation of ASVs using total AMOA database
+•	besthit.diamond.output.{organism}.ASVs.tsv: besthit of annoated ASVs using total AMOA database
+•	diamond.output.curateddb.{organism}.ASVs.tsv: annotation of ASVs using curated AMOA database  
+•	besthit.diamond.output.curateddb.{organism}.ASVs.tsv: besthit of annoated ASVs using curated AMOA database  
+•	annotated.{organism}.ASVs.fa: ASVs matched to AMOA database (those are confident and genuine AMOA sequences). 
 •	annotated.{organism}.ASVs.counts.tsv annotated ASV count table from different samples (recommended for alpha-diversity analysis (e.g. diversity indexes)) 
 
 {organism}.PSV-analysis
@@ -91,8 +91,8 @@ sh AMOA-SEQ.sh -e COM-output -i /home/ampere/slee/COMICON-Projet-2022/COM -f AGG
 •	annotated.{organism}.ASVs.faa: translate ASV sequence to amino acid sequences
 •	{organism}.PSV.faa.clstr: clustering of translated ASV sequences with 100% identity
 •	{organism}.PSV.faa: Unique protein sequence variants
-•	blastp.output.{organism}.PSVs.tsv : (recommended for beta-diversity analysis (e.g. phylogenetic tree))
-•	besthit.blastp.output.{organism}.PSVs.tsv :  
+•	blastp.output.{organism}.PSVs.tsv : (recommended for beta-diversity analysis (e.g. phylogenetic tree)): annotation of PSVs using curated AMOA database
+•	besthit.blastp.output.{organism}.PSVs.tsv : besthit of annotated PSVs using curated AMOA database 
 
 {organism}.phylogeny-analysis
 
