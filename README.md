@@ -18,7 +18,7 @@ AMOA-SEQ utilizes non-redundant AMOA sequences from NCBI as well as curated arch
 
 • apply DADA2 tool to generate amplicon sequence variants (ASVs), enabling a higher-resolution alternative to conventional operational taxonomic units (OTUs), which records the exact number of times a specific amplicon sequence variant is observed in each sample. Additionally, DADA2 incorporates quality information into its error model, making the algorithm more resilient to lower quality sequences (Callahan et al. 2016).
 
-• provide phylogenetic analysis of AMOA sequences using a curated AMOA database from Elves et al. 2018, Palomo et al 2022, Lee et al. 2023.
+• provide phylogenetic tree of AMOA sequences using a curated AMOA database from Elves et al. 2018, Palomo et al 2022, Lee et al. 2023.
 
 See more details in the publication (hopefully publish soon!).
 
