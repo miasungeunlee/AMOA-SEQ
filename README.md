@@ -32,6 +32,13 @@ conda create -y -n AMOA-SEQ -c bioconda seqkit fasttree muscle blast diamond tri
 https://benjjneb.github.io/dada2/dada-installation.html
 ````
 
+## Clone AMOA-SEQ directory
+````
+git clone https://github.com/miasungeunlee/AMOA-SEQ.git
+cd AMOA-SEQ
+chmod u+x AMOA-SEQ.sh # make the script executable
+````
+
 ## AMOA sequence databases
 •	AMO_database.faa: all AMOA sequences downloaded from JGI IMG (https://img.jgi.doe.gov/) and NCBI (https://www.ncbi.nlm.nih.gov/). List of accessions and detail of the gene set were shown in AMO_database.tsv 
 
