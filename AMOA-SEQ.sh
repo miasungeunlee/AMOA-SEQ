@@ -1,5 +1,6 @@
 #!/bin/bash
 # Author: Mia Sungeun Lee (sungeun.lee@ec-lyon.fr)
+# dada_AMO.R script from DADA2 pipeline (Callahan et al. 2016)
 # Set default values
 exp_name=""
 data_directory=""
