@@ -20,7 +20,7 @@ AMOA-SEQ utilizes non-redundant AMOA sequences from NCBI as well as curated arch
 
 • provide phylogenetic tree of AMOA sequences using a curated AMOA database from Elves et al. 2018, Palomo et al 2022, Lee et al. 2023.
 
-See more details in the publication (hopefully publish soon!).
+See more details in the publication (Lee et al. 2023 hopefully publish soon!).
 
 ## Installation with Conda
 ````
