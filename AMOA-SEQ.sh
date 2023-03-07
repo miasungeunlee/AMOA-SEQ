@@ -114,6 +114,7 @@ diamond makedb --in ref.$organism.amoA.faa  --db ref.$organism.amoA.dmnd
 mv AMO.dmnd ./$exp_name/
 mv ref.$organism.amoA.dmnd ./$exp_name/
 cp ref.$organism.amoA.faa ./$exp_name/
+cp *.py ./$exp_name/
 cd $exp_name
 echo "### STEP 0. Done ###"
 echo "============================================================================================";
