@@ -156,6 +156,22 @@ echo "==========================================================================
 
 #####################################################
 echo "============================================================================================";
+echo "### STEP 4. ASV clustering into OTUs and generating OTU count table ###"
+cd-hit-est -i annotated.$organism.ASVs.fa -o out.$organism.OTUs.fa -c 0.97 -n 5
+python ASV-to-OTU.py -i out.$organism.OTUs.fa.clstr -o OTU_ASV_ID.txt
+python OTU-table.py -i annotated.$organism.ASVs.counts.tsv -t OTU_ASV_ID.txt -o out.$organism.OTUs.counts.tsv
+sed 's/>ASV/>OTU/' out.$organism.OTUs.fa > tmp && mv tmp out.$organism.OTUs.fa
+diamond blastx --db ref.$organism.amoA.dmnd --query out.$organism.OTUs.fa --out diamond.output.curateddb.$organism.OTUs.tsv --evalue 0.00001  --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore stitle qlen slen qcovhsp
+awk '!x[$1]++' diamond.output.curateddb.$organism.OTUs.tsv > besthit.diamond.output.curateddb.$organism.OTUs.tsv
+awk '{print $1, "\t", $13}' ID-Taxa
+grep ">" out.$organism.OTUs.fa | sed 's/>//' > OTU-ID
+awk 'FNR==NR{a[$1];next} $1 in a{print; delete a[$1]} END{for (i in a) print i, "NA"}' OUT-ID ID-Taxa > out.$organism.OTUs.taxa.tsv
+echo "### STEP 4. OTU count table generated and annotation done ###"
+echo "============================================================================================";
+#####################################################
+
+#####################################################
+echo "============================================================================================";
 echo "### STEP 4. translating the ASV sequences to PSV sequences ###"
 # In order to correct translation, remove 2 first nucleotides & 1st nucleotide and 2N were removed from comammox & archaeal amoA amplicon
 sed 's/NNNNNNNNNN/NNNNNNNNN/g' annotated.$organism.ASVs.fa > tmp && mv tmp annotated.$organism.ASVs.fa
@@ -187,7 +203,7 @@ FastTree tree.$organism.trim.afa > tree.$organism.nwk
 echo "### STEP 6. Phylogenetic tree generated ### "
 echo "============================================================================================";
 #####################################################
-rm ID ASV-ID Annotated-ASV-ID
+rm ID ASV-ID Annotated-ASV-ID ID-Taxa OTU-ID
 mkdir $organism.ASV-analysis
 mkdir $organism.PSV-analysis
 mkdir $organism.Phylogenetic-analysis
