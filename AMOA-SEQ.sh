@@ -167,7 +167,7 @@ python OTU-table.py -i annotated.$organism.ASVs.counts.tsv -t OTU_ASV_ID.txt -o 
 sed 's/>ASV/>OTU/' out.$organism.OTUs.fa > tmp && mv tmp out.$organism.OTUs.fa
 diamond blastx --db ref.$organism.amoA.dmnd --query out.$organism.OTUs.fa --out diamond.output.curateddb.$organism.OTUs.tsv --evalue 0.00001  --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore stitle qlen slen qcovhsp
 awk '!x[$1]++' diamond.output.curateddb.$organism.OTUs.tsv > besthit.diamond.output.curateddb.$organism.OTUs.tsv
-awk '{print $1, "\t", $13}' ID-Taxa
+awk '{print $1, "\t", $13}' besthit.diamond.output.curateddb.$organism.OTUs.tsv > ID-Taxa
 grep ">" out.$organism.OTUs.fa | sed 's/>//' > OTU-ID
 awk 'FNR==NR{a[$1];next} $1 in a{print; delete a[$1]} END{for (i in a) print i, "NA"}' OUT-ID ID-Taxa > out.$organism.OTUs.taxa.tsv
 echo "### STEP 4. OTU count table generated and annotation done ###"
