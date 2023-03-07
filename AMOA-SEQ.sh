@@ -1,6 +1,9 @@
 #!/bin/bash
 # Author: Mia Sungeun Lee (sungeun.lee@ec-lyon.fr)
+# Description: AMOA-SEQ bash script for analysing AMOA amplicon sequencing data
+# Date: 20230306
 # dada_AMO.R script from DADA2 pipeline (Callahan et al. 2016)
+
 # Set default values
 exp_name=""
 data_directory=""
