@@ -119,6 +119,20 @@ sh AMOA-SEQ.sh -e COM-output -i ./TEST-COM-Fastq -f AGGNGAYTGGGAYTTCTGG -r CGGAC
 •	````annotated.{organism}.ASVs.counts.tsv````: annotated ASV count table from different samples (recommended for alpha-diversity analysis (e.g. diversity indexes)) 
 
 ````
+{organism}.OTU-analysis # directory
+````
+•	````out.{organism}.OTUs.fa````: generated OTU sequences
+
+•	````out.{organism}.OTUs.counts.tsv````: OTU count table from different samples
+
+•	````diamond.output.curateddb.{organism}.OTUs.tsv````: annotation of OTUs using curated AMOA database  
+
+•	````besthit.diamond.output.curateddb.{organism}.OTUs.tsv````: besthit of annoated OTUs using curated AMOA database  
+
+•	````out.{organism}.OTUs.taxa.tsv````: OTU taxa information 
+
+
+````
 {organism}.PSV-analysis # directory
 ````
 
