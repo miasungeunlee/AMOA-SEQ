@@ -1,4 +1,3 @@
-# AMOA-SEQ
 ````
 ############################################################################################
 #     __      ___    ___     ____        __               _______    _______    _______    #
@@ -9,6 +8,7 @@
 #/_/      \_\|_|      |_|  \ ____ / /_/      \_\         \_______/  |_______|         |__| #
 ############################################################################################
 ````
+# AMOA-SEQ
 AMOA-SEQ is a bash pipeline using an expert-guided apparoch to analyze diverse AMOA sequences.
 AMOA-SEQ utilizes non-redundant AMOA sequences from NCBI as well as curated archaeal, bacterial and comammox AMOA sequences from Elves et al. 2018, Lee et al. 2023 (this study), Palomo et al 2022 for taxonomic and phylogenetic analyses. 
 
@@ -79,31 +79,53 @@ sh AMOA-SEQ.sh -e COM-output -i /home/ampere/slee/COMICON-Projet-2022/COM -f AGG
 
 ### Output directory and files
 ````
-{organism}.ASV-analysis
+{organism}.ASV-analysis # directory
+````
+•	````track.{organism}.summary.tsv````: DADA2 output summary containing quality control, denoising, number of merged sequences, number of chimeras in each sample. 
 
-•	track.{organism}.summary.tsv: DADA2 output summary containing quality control, denoising, number of merged sequences, number of chimeras in each sample. 
-•	out.{organism}.ASVs.fa: generated amplicon sequence variants (however, some ASVs may be not real AMOA sequences due to sequencing error, not recommended to directly use these ASV sequences)
-•	out.{organism}.ASVs.counts.tsv: ASV count table from different samples
-•	correct.{organism}.ASVs.fa: selected ASVs according to expected amplicon size (option -t) 
-•	correct.{organism}.ASVs.counts.tsv: selected ASV count table from different samples
-•	diamond.output.{organism}.ASVs.tsv: annotation of ASVs using total AMOA database
-•	besthit.diamond.output.{organism}.ASVs.tsv: besthit of annoated ASVs using total AMOA database
-•	diamond.output.curateddb.{organism}.ASVs.tsv: annotation of ASVs using curated AMOA database  
-•	besthit.diamond.output.curateddb.{organism}.ASVs.tsv: besthit of annoated ASVs using curated AMOA database  
-•	annotated.{organism}.ASVs.fa: ASVs matched to AMOA database (those are confident and genuine AMOA sequences). 
-•	annotated.{organism}.ASVs.counts.tsv annotated ASV count table from different samples (recommended for alpha-diversity analysis (e.g. diversity indexes)) 
+•	````out.{organism}.ASVs.fa````: generated amplicon sequence variants (however, some ASVs may be not real AMOA sequences due to sequencing error, not recommended to directly use these ASV sequences)
 
-{organism}.PSV-analysis
+•	````out.{organism}.ASVs.counts.tsv````: ASV count table from different samples
 
-•	annotated.{organism}.ASVs.faa: translate ASV sequence to amino acid sequences
-•	{organism}.PSV.faa.clstr: clustering of translated ASV sequences with 100% identity
-•	{organism}.PSV.faa: Unique protein sequence variants
-•	blastp.output.{organism}.PSVs.tsv : (recommended for beta-diversity analysis (e.g. phylogenetic tree)): annotation of PSVs using curated AMOA database
-•	besthit.blastp.output.{organism}.PSVs.tsv : besthit of annotated PSVs using curated AMOA database 
+•	````correct.{organism}.ASVs.fa````: selected ASVs according to expected amplicon size (option -t) 
 
-{organism}.phylogeny-analysis
+•	````correct.{organism}.ASVs.counts.tsv````: selected ASV count table from different samples
 
-•	tree.{organism}.faa: PSV sequences + curated AMOA sequence for phylogeny analysis
-•	tree.{organism}.afa: AMOA-aligments for each PSV and curated AMOA sequences using MUSCLE with -super5 option
-•	tree.{organism}.trim.afa: Ambiguous regions and gaps removed using trimal with -nogaps option
-•	tree.{organism}.nwk: AMOA FastTREE file in Newick format  
+•	````diamond.output.{organism}.ASVs.tsv````: annotation of ASVs using total AMOA database
+
+•	````besthit.diamond.output.{organism}.ASVs.tsv````: besthit of annoated ASVs using total AMOA database
+
+•	````diamond.output.curateddb.{organism}.ASVs.tsv````: annotation of ASVs using curated AMOA database  
+
+•	````besthit.diamond.output.curateddb.{organism}.ASVs.tsv````: besthit of annoated ASVs using curated AMOA database  
+
+•	````annotated.{organism}.ASVs.fa````: ASVs matched to AMOA database (those are confident and genuine AMOA sequences). 
+
+•	````annotated.{organism}.ASVs.counts.tsv````: annotated ASV count table from different samples (recommended for alpha-diversity analysis (e.g. diversity indexes)) 
+
+````
+{organism}.PSV-analysis # directory
+````
+
+•	````annotated.{organism}.ASVs.faa````: translate ASV sequence to amino acid sequences
+
+•	````{organism}.PSV.faa.clstr````: clustering of translated ASV sequences with 100% identity
+
+•	````{organism}.PSV.faa````: Unique protein sequence variants
+
+•	````blastp.output.{organism}.PSVs.tsv````: (recommended for beta-diversity analysis (e.g. phylogenetic tree)): annotation of PSVs using curated AMOA database
+
+•	````besthit.blastp.output.{organism}.PSVs.tsv````: besthit of annotated PSVs using curated AMOA database 
+
+````
+{organism}.phylogeny-analysis # directory
+````
+
+•	````tree.{organism}.faa````: PSV sequences + curated AMOA sequence for phylogeny analysis
+
+•	````tree.{organism}.afa````: AMOA-aligments for each PSV and curated AMOA sequences using MUSCLE with -super5 option
+
+•	````tree.{organism}.trim.afa````: Ambiguous regions and gaps removed using trimal with -nogaps option
+
+•	````tree.{organism}.nwk````: AMOA FastTREE file in Newick format  
+
