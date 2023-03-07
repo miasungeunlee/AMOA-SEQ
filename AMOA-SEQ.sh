@@ -169,7 +169,7 @@ diamond blastx --db ref.$organism.amoA.dmnd --query out.$organism.OTUs.fa --out 
 awk '!x[$1]++' diamond.output.curateddb.$organism.OTUs.tsv > besthit.diamond.output.curateddb.$organism.OTUs.tsv
 awk '{print $1, "\t", $13}' besthit.diamond.output.curateddb.$organism.OTUs.tsv > ID-Taxa
 grep ">" out.$organism.OTUs.fa | sed 's/>//' > OTU-ID
-awk 'FNR==NR{a[$1];next} $1 in a{print; delete a[$1]} END{for (i in a) print i, "NA"}' OUT-ID ID-Taxa > out.$organism.OTUs.taxa.tsv
+awk 'FNR==NR{a[$1];next} $1 in a{print; delete a[$1]} END{for (i in a) print i, "NA"}' OTU-ID ID-Taxa > out.$organism.OTUs.taxa.tsv
 echo "### STEP 4. OTU count table generated and annotation done ###"
 echo "============================================================================================";
 #####################################################
