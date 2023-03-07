@@ -171,15 +171,20 @@ echo "==========================================================================
 
 #####################################################
 echo "============================================================================================";
-echo "### STEP 5. Comparing the PSV sequences to curated AMOA database for phylogenetic tree ###"
+echo "### STEP 5. Annotating the PSV sequences against curated AMOA database using BLASTp ###"
 # AOA
 blastp -query $organism.PSV.faa -subject ref.$organism.amoA.faa -outfmt '6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore salltitles' -out blastp.output.$organism.PSVs.tsv -num_threads 16 -evalue 0.00001
 awk '!x[$1]++' blastp.output.$organism.PSVs.tsv  > besthit.blastp.output.$organism.PSVs.tsv
+echo "### STEP 5. Annotation done ###"
+echo "============================================================================================";
+#####################################################
+echo "============================================================================================";
+echo "### STEP 6. Aligning of the PSV sequences and curated AMOA sequences for generating phylogenetic tree ###"
 cat $organism.PSV.faa ref.$organism.amoA.faa > tree.$organism.faa
 muscle -super5 tree.$organism.faa -output tree.$organism.afa
 trimal -in tree.$organism.afa -out tree.$organism.trim.afa -nogaps
 FastTree tree.$organism.trim.afa > tree.$organism.nwk
-echo "### STEP 5. Phylogenetic tree analysis done ###"
+echo "### STEP 6. Phylogenetic tree generated ### "
 echo "============================================================================================";
 #####################################################
 rm ID ASV-ID Annotated-ASV-ID
@@ -189,5 +194,6 @@ mkdir $organism.Phylogenetic-analysis
 mv *ASVs* ./$organism.ASV-analysis
 mv *PSV* ./$organism.PSV-analysis
 mv *tree* ./$organism.Phylogenetic-analysis
+rm *dmnd *faa *R
 #####################################################
 
