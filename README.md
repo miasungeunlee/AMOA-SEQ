@@ -74,19 +74,21 @@ sh AMOA-SEQ.sh -e COM-output -i ./TEST-COM-Fastq -f AGGNGAYTGGGAYTTCTGG -r CGGAC
 
 ### What does AMOA-SEQ.sh script do?
 
-**Step 0**) Making AMOA databases ````AMO.dmnd```` using Diamond tool (Buchfink et al. 2021) in ````$exp_name```` working directory.
+**Step 0)** Making AMOA databases ````AMO.dmnd```` using Diamond tool (Buchfink et al. 2021) in ````$exp_name```` working directory.
 
-**Step 1**) Running the DADA2 pipeline ````dada_AMO.R```` to generate the amplicon sequence variant (ASV) sequences ````out.{organism}.ASVs.fa```` and ASV count table ````out.{organism}.ASVs.counts.tsv```` across different samples in $exp_name working directory.
+**Step 1)** Running the DADA2 pipeline ````dada_AMO.R```` to generate the amplicon sequence variant (ASV) sequences ````out.{organism}.ASVs.fa```` and ASV count table ````out.{organism}.ASVs.counts.tsv```` across different samples in $exp_name working directory.
 
-**Step 2**) Select the AMOA ASV sequences according to expected amplicon size using Seqkit tool (Shen et al. 2016). Generating correct ASV sequences ````correct.{organism}.ASVs.fa```` and ASV count table ````correct.{organism}.ASVs.counts.tsv```` across different samples. 
+**Step 2)** Select the AMOA ASV sequences according to expected amplicon size using Seqkit tool (Shen et al. 2016). Generating correct ASV sequences ````correct.{organism}.ASVs.fa```` and ASV count table ````correct.{organism}.ASVs.counts.tsv```` across different samples. 
 
-**Step 3**) Annotating the AMOA ASV sequences against AMOA database (NR & IMG-JGI) and curated AMOA databases with Diamond blastx (Buchfink et al. 2021). Generating annotated ASV sequences ````annotated.{organism}.ASVs.fa```` and ASV count table ````annotated.{organism}.ASVs.counts.tsv```` across different samples. 
+**Step 3)** Annotating the AMOA ASV sequences against AMOA database (NR & IMG-JGI) and curated AMOA databases with Diamond blastx (Buchfink et al. 2021). Generating annotated ASV sequences ````annotated.{organism}.ASVs.fa```` and ASV count table ````annotated.{organism}.ASVs.counts.tsv```` across different samples. 
 
-**Step 4**) Prior to correct translation, first nucleotide & two first nucleotides are removed from AOA & AOB and COMMAMOX ASV sequences. Translating the annotated ASV sequences to protein sequence variant (PSV) sequences ````annotated.{organism}.ASVs.faa```` using Seqkit tool (Shen et al. 2016). Dereplicating the PSV sequences ````{organism}.PSV.faa````using CDHIT tool (Li et al. 2006)
+**Step 4)** Clustering the AMOA ASV sequences into OTUs ````out.$organism.OTUs.fa```` with 97% of sequence identity using CDHIT tool (Li et al. 2006). Generating OTU count table ````out.{organism}.OTUs.counts.tsv```` across different samples and annotating OTUs with curated AMOA databases with Diamond blastx (Buchfink et al. 2021).
 
-**Step 5**) Annotating the PSV sequences against curated AMOA database using BLASTp 
+**Step 5)** Prior to correct translation, first nucleotide & two first nucleotides are removed from AOA & AOB and COMMAMOX ASV sequences. Translating the annotated ASV sequences to protein sequence variant (PSV) sequences ````annotated.{organism}.ASVs.faa```` using Seqkit tool (Shen et al. 2016). Dereplicating the PSV sequences ````{organism}.PSV.faa````using CDHIT tool (Li et al. 2006)
 
-**Step 6**) Aligning of the PSV sequences ````{organism}.PSV.faa```` and curated AMOA sequences ````ref.{organism}.amoA.faa```` using MUSCLE (Edgar et al. 2004) and spurious sequences or poorly aligned regions were removed using trimAI (Capella-Gutiérrez · 2009). ````tree.$organism.trim.afa```` is used for generating phylogenetic tree ````tree.{organism}.nwk```` using FastTree (Price et al. 2009).
+**Step 6)** Annotating the PSV sequences against curated AMOA database using BLASTp 
+
+**Step 7)** Aligning of the PSV sequences ````{organism}.PSV.faa```` and curated AMOA sequences ````ref.{organism}.amoA.faa```` using MUSCLE (Edgar et al. 2004) and spurious sequences or poorly aligned regions were removed using trimAI (Capella-Gutiérrez · 2009). ````tree.$organism.trim.afa```` is used for generating phylogenetic tree ````tree.{organism}.nwk```` using FastTree (Price et al. 2009).
 
 
 
