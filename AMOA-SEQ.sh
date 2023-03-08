@@ -164,7 +164,13 @@ echo "### STEP 4. ASV clustering into OTUs and generating OTU count table ###"
 cd-hit-est -i annotated.$organism.ASVs.fa -o out.$organism.OTUs.fa -c 0.97 -n 5
 python ASV-to-OTU.py -i out.$organism.OTUs.fa.clstr -o OTU_ASV_ID.txt
 python OTU-table.py -i annotated.$organism.ASVs.counts.tsv -t OTU_ASV_ID.txt -o out.$organism.OTUs.counts.tsv
-sed 's/>ASV/>OTU/' out.$organism.OTUs.fa > tmp && mv tmp out.$organism.OTUs.fa
+awk '{print $2, "\t", $1}' OTU_ASV_ID.txt | sort -u > ASV_OTU_ID.txt
+sed 's/ //g' ASV_OTU_ID.txt > tmp && mv tmp ASV_OTU_ID.txt
+sed 's/ //g' ASV_OTU_ID.txt > tmp && mv tmp ASV_OTU_ID.txt
+awk 'BEGIN { FS="\t" }
+     NR==FNR { map[$1]=$2; next }
+     /^>/ { print ">" map[substr($0,2)]; next }
+     { print }' ASV_OTU_ID.txt out.$organism.OTUs.fa > tmp && mv tmp out.$organism.OTUs.fa
 diamond blastx --db ref.$organism.amoA.dmnd --query out.$organism.OTUs.fa --out diamond.output.curateddb.$organism.OTUs.tsv --evalue 0.00001  --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore stitle qlen slen qcovhsp
 awk '!x[$1]++' diamond.output.curateddb.$organism.OTUs.tsv > besthit.diamond.output.curateddb.$organism.OTUs.tsv
 awk '{print $1, "\t", $13}' besthit.diamond.output.curateddb.$organism.OTUs.tsv > ID-Taxa
