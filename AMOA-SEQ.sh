@@ -213,13 +213,13 @@ FastTree tree.$organism.trim.afa > tree.$organism.nwk
 echo "### STEP 6. Phylogenetic tree generated ### "
 echo "============================================================================================";
 #####################################################
-rm ID ASV-ID Annotated-ASV-ID ID-Taxa OTU-ID
+rm ID ASV-ID Annotated-ASV-ID ID-Taxa OTU-ID 
 mkdir $organism.ASV-analysis
 mkdir $organism.PSV-analysis
 mkdir $organism.Phylogenetic-analysis
 mkdir $organism.OTU-analysis
 rm *dmnd *R
-rm *.py OTU_ASV_ID.txt
+rm *.py OTU_ASV_ID.txt ASV_OTU_ID.txt
 mv *ASVs* ./$organism.ASV-analysis
 mv *PSV* ./$organism.PSV-analysis
 mv *tree* ./$organism.Phylogenetic-analysis
