@@ -61,7 +61,7 @@ sh AMOA-SEQ.sh [-h help] [-e output_directory_name] [-i fastq_directory] [-f for
 -l: truncation read length (e.g. 200 bp for AOA, 250 bp for AOB and COMAMMOX)
 -c: TRUE for AOA AMOA, just concatenating forward and reverse reads, for other AMOA, merging forward and reverse reads are possible, use FALSE option
 -t: expected merged sequence length (410 bp for AOA, 452 bp for AOB and 396 bp for COMAMMOX; these lengths are after removing the primer lengths)
--n: number of nucleotides to be removed prior to correct translation (first nucleotide & two first nucleotides were removed from AOA & AOB and COMMAMOX ASV sequences)
+-n: number of nucleotides to be removed prior to correct translation (first nucleotide & two first nucleotides were removed from AOA & AOB ASV sequences)
 -o: organism; It can be either AOA, AOB, or COM, depending on your dataset.
 ````
 
@@ -70,7 +70,7 @@ sh AMOA-SEQ.sh [-h help] [-e output_directory_name] [-i fastq_directory] [-f for
 source activate AMOA-SEQ
 sh AMOA-SEQ.sh -e AOA-output -i /home/ampere/slee/AMOA-SEQ/TEST-AOA-Fastq -f ATGGTCTGGCTWAGACG -r GCCATCCATCTGTATGTCCA -m 200 -l 200 -c TRUE -t 410 -n 2 -o AOA
 sh AMOA-SEQ.sh -e AOB-output -i /home/ampere/slee/AMOA-SEQ/TEST-AOB-Fastq -f GGGGTTTCTACTGGTGGT -r CCCCTCKGSAAAGCCTTCTTC -m 231 -l 250 -c FALSE -t 452 -n 3 -o AOB
-sh AMOA-SEQ.sh -e COM-output -i /home/ampere/slee/AMOA-SEQ/TEST-COM-Fastq -f AGGNGAYTGGGAYTTCTGG -r CGGACAWABRTGAABCCCAT -m 204 -l 250 -c FALSE -t 396 -n 3 -o COM
+sh AMOA-SEQ.sh -e COM-output -i /home/ampere/slee/AMOA-SEQ/TEST-COM-Fastq -f AGGNGAYTGGGAYTTCTGG -r CGGACAWABRTGAABCCCAT -m 204 -l 250 -c FALSE -t 396 -n 1 -o COM
 ````
 
 ### What does AMOA-SEQ.sh script do?
