@@ -212,11 +212,12 @@ mkdir $organism.ASV-analysis
 mkdir $organism.PSV-analysis
 mkdir $organism.Phylogenetic-analysis
 mkdir $organism.OTU-analysis
-rm *dmnd *faa *R
+rm *dmnd *R
 rm *.py OTU_ASV_ID.txt
 mv *ASVs* ./$organism.ASV-analysis
 mv *PSV* ./$organism.PSV-analysis
 mv *tree* ./$organism.Phylogenetic-analysis
 mv *OTUs* ./$organism.OTU-analysis
+rm *.faa
 #####################################################
 
