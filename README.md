@@ -53,7 +53,7 @@ sh AMOA-SEQ.sh [-h help] [-e output_directory_name] [-i fastq_directory] [-f for
 ### option variable explanation ###
 -h: help
 -e: output directory name (e.g. output)
--i: fastq.gz file path (e.g. /home/ampere/slee/COMICON-Projet-2022/) 
+-i: fastq.gz file path (e.g. /home/ampere/slee/COMICON-Projet-2022/   # Full pathway for running Rscript) 
 # fastq file must end with either "_R1_001.fastq.gz" or "_R2_001.fastq.gz" pattern (directly from MiSeq sequencing) #
 -f: forward primer (e.g. ATGGTCTGGCTWAGACG for AOA forward primer, GGGGTTTCTACTGGTGGT for AOB forward primer and AGGNGAYTGGGAYTTCTGG for COMAMMOX forword primer)
 -r: reverse primer (e.g. GCCATCCATCTGTATGTCCA for AOA reverse primer, CCCCTCKGSAAAGCCTTCTTC for AOB reverse primer and CGGACAWABRTGAABCCCAT for COMAMMOX reverse primer)
