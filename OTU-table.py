@@ -8,7 +8,7 @@ import pandas as pd
 # Parse the command-line arguments
 parser = argparse.ArgumentParser(description="Converting ASV count table to OTU count table")
 parser.add_argument("-i", "--input", required=True, help="Input ASV count table file")
-parser.add_argument("-t", "--otu.asv.list", required=True, help="Input OTU-ASV-list file")
+parser.add_argument("-t", "--otulist", required=True, help="Input OTU-ASV-list file")
 parser.add_argument("-o", "--output", required=True, help="Output OTU count table file")
 args = parser.parse_args()
 
