@@ -68,8 +68,14 @@ sh AMOA-SEQ.sh [-h help] [-e output_directory_name] [-i fastq_directory] [-f for
 ### Example of the test run AMOA-SEQ.sh for AOA, AOB and Comammox AMOA amplicon sequencing:
 ````
 source activate AMOA-SEQ
+# For Miseq reagent kit V3, 2 x 300 bp
 sh AMOA-SEQ.sh -e AOA-output -i /home/ampere/slee/AMOA-SEQ/TEST-AOA-Fastq -f ATGGTCTGGCTWAGACG -r GCCATCCATCTGTATGTCCA -m 200 -l 200 -c TRUE -t 410 -n 2 -o AOA
 sh AMOA-SEQ.sh -e AOB-output -i /home/ampere/slee/AMOA-SEQ/TEST-AOB-Fastq -f GGGGTTTCTACTGGTGGT -r CCCCTCKGSAAAGCCTTCTTC -m 231 -l 250 -c FALSE -t 452 -n 3 -o AOB
+sh AMOA-SEQ.sh -e COM-output -i /home/ampere/slee/AMOA-SEQ/TEST-COM-Fastq -f AGGNGAYTGGGAYTTCTGG -r CGGACAWABRTGAABCCCAT -m 204 -l 250 -c FALSE -t 396 -n 1 -o COM
+
+# For Miseq reagent kit V2, 2 x 250 bp
+sh AMOA-SEQ.sh -e AOA-output -i /home/ampere/slee/AMOA-SEQ/TEST-AOA-Fastq -f ATGGTCTGGCTWAGACG -r GCCATCCATCTGTATGTCCA -m 200 -l 200 -c TRUE -t 410 -n 2 -o AOA
+sh AMOA-SEQ.sh -e AOB-output -i /home/ampere/slee/AMOA-SEQ/TEST-AOB-Fastq -f GGGGTTTCTACTGGTGGT -r CCCCTCKGSAAAGCCTTCTTC -m 200 -l 200 -c TRUE -t 410 -n 3 -o AOB
 sh AMOA-SEQ.sh -e COM-output -i /home/ampere/slee/AMOA-SEQ/TEST-COM-Fastq -f AGGNGAYTGGGAYTTCTGG -r CGGACAWABRTGAABCCCAT -m 204 -l 250 -c FALSE -t 396 -n 1 -o COM
 ````
 
