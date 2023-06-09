@@ -14,6 +14,7 @@ trunc_length=""
 just_concat=""
 select_length=""
 num_nucleotide=""
+num_nucleotide_gap=""
 organism=""
 
 function usage {
@@ -30,11 +31,11 @@ function usage {
   ";
 echo "Exploring the AMOA diversity";
 echo " ";
-echo "Usage: $0 [-e OUTPUT_FILE_NAME] [-i DATA_DIRECTORY] [-f FORWARD_READ] [-r REVERSE_READ] [-m MIN_LENGTH] [-l TRUNC_LENGTH] [-c JUST_CONCAT] [-t SELECT_LENGTH] [-n NUM_NUCLEOTIDE] [-o ORGANISM] [-h]"
+echo "Usage: $0 [-e OUTPUT_FILE_NAME] [-i DATA_DIRECTORY] [-f FORWARD_READ] [-r REVERSE_READ] [-m MIN_LENGTH] [-l TRUNC_LENGTH] [-c JUST_CONCAT] [-t SELECT_LENGTH] [-n NUM_NUCLEOTIDE] [-g NUM_NUCLEOTIDE_GAP] [-o ORGANISM] [-h]"
 }
 
 # Parse command-line options
-while getopts "e:i:f:r:m:l:c:t:n:o:h" flag; do
+while getopts "e:i:f:r:m:l:c:t:n:g:o:h" flag; do
 case "${flag}" in
 e) exp_name="${OPTARG}" ;;
 i) data_directory="${OPTARG}" ;;
@@ -45,13 +46,14 @@ l) trunc_length="${OPTARG}" ;;
 c) just_concat="${OPTARG}" ;;
 t) select_length="${OPTARG}" ;;
 n) num_nucleotide="${OPTARG}" ;;
+g) num_nucleotide_gap="${OPTARG}" ;;
 o) organism="${OPTARG}" ;;
 h) usage; exit 0 ;;
 *) usage; exit 1 ;;
 esac
 done
 
-while getopts "e:i:f:r:m:l:c:t:n:o:" flag; do
+while getopts "e:i:f:r:m:l:c:t:n:g:o:" flag; do
     case "${flag}" in
         e) exp_name="${OPTARG}" ;;
         i) data_directory="${OPTARG}" ;;
@@ -62,6 +64,7 @@ while getopts "e:i:f:r:m:l:c:t:n:o:" flag; do
         c) just_concat="${OPTARG}" ;;
         t) select_length="${OPTARG}" ;;
         n) num_nucleotide="${OPTARG}" ;;
+        g) num_nucleotide_gap="${OPTARG}" ;;
         o) organism="${OPTARG}" ;;
     esac
 done
@@ -97,6 +100,7 @@ echo "#Trunc_length: $trunc_length";
 echo "#Just_concat: $just_concat";
 echo "#Trim_length: $select_length";
 echo "#Num_nucleotide: $num_nucleotide";
+echo "#Num_nucleotide_gap: $num_nucleotide_gap";
 echo "#Type_organism: $organism";
 workng_directory=$(pwd)
 echo "#workng_directory: $workng_directory";
@@ -122,7 +126,7 @@ echo "==========================================================================
 echo "============================================================================================";
 echo "### STEP 1. DADA2 analysis in $exp_name working directory ###"
 # Call R script with command-line options as arguments
-Rscript dada_AMO.R "${exp_name}" "${data_directory}" "${FWD}" "${REV}" "${min_length}" "${trunc_length}" "${just_concat}" "${select_length}" "${num_nucleotide}" "${organism}"
+Rscript dada_AMO.R "${exp_name}" "${data_directory}" "${FWD}" "${REV}" "${min_length}" "${trunc_length}" "${just_concat}" "${select_length}" "${num_nucleotide}" "${num_nucleotide_gap}" "${organism}"
 
 mv out.ASVs.fa out.$organism.ASVs.fa
 mv out.ASVs.counts.tsv out.$organism.ASVs.counts.tsv
