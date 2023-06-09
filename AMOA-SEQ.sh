@@ -31,11 +31,11 @@ function usage {
   ";
 echo "Exploring the AMOA diversity";
 echo " ";
-echo "Usage: $0 [-e OUTPUT_FILE_NAME] [-i DATA_DIRECTORY] [-f FORWARD_READ] [-r REVERSE_READ] [-m MIN_LENGTH] [-l TRUNC_LENGTH] [-c JUST_CONCAT] [-t SELECT_LENGTH] [-n NUM_NUCLEOTIDE] [-g NUM_NUCLEOTIDE_GAP] [-o ORGANISM] [-h]"
+echo "Usage: $0 [-e OUTPUT_FILE_NAME] [-i DATA_DIRECTORY] [-f FORWARD_READ] [-r REVERSE_READ] [-m MIN_LENGTH] [-l TRUNC_LENGTH] [-c JUST_CONCAT] [-t SELECT_LENGTH] [-n NUM_NUCLEOTIDE] [-o ORGANISM] [-h]"
 }
 
 # Parse command-line options
-while getopts "e:i:f:r:m:l:c:t:n:g:o:h" flag; do
+while getopts "e:i:f:r:m:l:c:t:n:o:h" flag; do
 case "${flag}" in
 e) exp_name="${OPTARG}" ;;
 i) data_directory="${OPTARG}" ;;
@@ -46,14 +46,13 @@ l) trunc_length="${OPTARG}" ;;
 c) just_concat="${OPTARG}" ;;
 t) select_length="${OPTARG}" ;;
 n) num_nucleotide="${OPTARG}" ;;
-g) num_nucleotide_gap="${OPTARG}" ;;
 o) organism="${OPTARG}" ;;
 h) usage; exit 0 ;;
 *) usage; exit 1 ;;
 esac
 done
 
-while getopts "e:i:f:r:m:l:c:t:n:g:o:" flag; do
+while getopts "e:i:f:r:m:l:c:t:n:o:" flag; do
     case "${flag}" in
         e) exp_name="${OPTARG}" ;;
         i) data_directory="${OPTARG}" ;;
@@ -64,7 +63,6 @@ while getopts "e:i:f:r:m:l:c:t:n:g:o:" flag; do
         c) just_concat="${OPTARG}" ;;
         t) select_length="${OPTARG}" ;;
         n) num_nucleotide="${OPTARG}" ;;
-        g) num_nucleotide_gap="${OPTARG}" ;;
         o) organism="${OPTARG}" ;;
     esac
 done
@@ -100,7 +98,6 @@ echo "#Trunc_length: $trunc_length";
 echo "#Just_concat: $just_concat";
 echo "#Trim_length: $select_length";
 echo "#Num_nucleotide: $num_nucleotide";
-echo "#Num_nucleotide_gap: $num_nucleotide_gap";
 echo "#Type_organism: $organism";
 workng_directory=$(pwd)
 echo "#workng_directory: $workng_directory";
@@ -188,11 +185,11 @@ echo "==========================================================================
 echo "============================================================================================";
 echo "### STEP 4. translating the ASV sequences to PSV sequences ###"
 # In order to correct translation, remove 2 first nucleotides & 1st nucleotide and 2N were removed from comammox & archaeal amoA amplicon
-sed 's/NNNNNNNNNN/NNNNNNNNN/g' annotated.$organism.ASVs.fa > tmp && mv tmp annotated.$organism.ASVs.fa
+sed 's/NNNNNNNNNN/NNNNNNNNN/g' annotated.AOA.ASVs.fa > tmp && mv tmp annotated.AOA.ASVs.fa
 seqkit seq -w 0 annotated.$organism.ASVs.fa > tmp && mv tmp annotated.$organism.ASVs.fa
 awk '/^>/ {print $0} /^[^>]/ {print substr($0,'$num_nucleotide')}' annotated.$organism.ASVs.fa > tmp && mv tmp annotated.$organism.ASVs.fa
 seqkit translate -f 1 annotated.$organism.ASVs.fa > annotated.$organism.ASVs.faa
-sed 's/XXXX//g' annotated.$organism.ASVs.faa > tmp && mv tmp annotated.$organism.ASVs.faa
+sed 's/X//g' annotated.$organism.ASVs.faa > tmp && mv tmp annotated.$organism.ASVs.faa
 cd-hit -i annotated.$organism.ASVs.faa -o $organism.PSV.faa -c 1 -n 5
 sed 's/ASV/PSV/g' $organism.PSV.faa > tmp && mv tmp $organism.PSV.faa
 echo "### STEP 4. translating the ASV sequences to PSV sequences and dereplication of PSVs, done ###"
