@@ -22,6 +22,8 @@ See more details in the publication (hopefully publish soon!).
 ## Installation with Conda
 ````
 conda create -y -n AMOA-SEQ -c bioconda seqkit fasttree muscle blast diamond trimal diamond=0.9.19 cd-hit cutadapt
+source activate AMOA-SEQ
+pip install biopython
 ````
 
 ## DADA2 tool installation 
