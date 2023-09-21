@@ -133,10 +133,10 @@ echo "==========================================================================
 #####################################################
 ### Although DADA2 tool pipeline removed the ambigous sequences using its error model, it can produce several ambigous sequences depending on the datasets.
 ### Thus, the ambigous sequences were removed by
-###   - checking expected amplicon sizes 
+###   - checking expected amplicon sizes
 ###   - blasting several AMO databases
 ###   - checking conserved regions of manually curated AMO databases and several AMO datasets at protein sequence level using final.$organism.py script
-### 
+###
 #####################################################
 #####################################################
 echo "============================================================================================";
@@ -155,11 +155,6 @@ diamond blastx --db AMO.dmnd  --query out.DADA2.$organism.ASVs.fa --out diamond.
 awk '!x[$1]++' diamond.output.DADA2.$organism.ASVs.tsv > besthit.diamond.output.DADA2.$organism.ASVs.tsv
 awk '{print $1}' diamond.output.DADA2.$organism.ASVs.tsv | sort -u > Annotated-ASV-ID
 seqkit grep -n -f Annotated-ASV-ID out.DADA2.correct-size.$organism.ASVs.fa > annotated.DADA2.$organism.ASVs.fa
-
-
-sh AMOA-SEQ.sh -e AOA-output -i /home/ampere/slee/AMOA-SEQ/TEST-AOA-Fastq -f ATGGTCTGGCTWAGACG -r GCCATCCATCTGTATGTCCA -m 200 -l 200 -c TRUE -t 410 -n 2 -o AOA
-sh AMOA-SEQ.sh -e AOB-output -i /home/ampere/slee/AMOA-SEQ/TEST-AOB-Fastq -f GGGGTTTCTACTGGTGGT -r CCCCTCKGSAAAGCCTTCTTC -m 231 -l 250 -c FALSE -t 452 -n 3 -o AOB
-sh AMOA-SEQ.sh -e COM-output -i /home/ampere/slee/AMOA-SEQ/TEST-COM-Fastq -f AGGNGAYTGGGAYTTCTGG -r CGGACAWABRTGAABCCCAT -m 204 -l 250 -c FALSE -t 396 -n 1 -o COM
 
 
 # In order to correct translation of AMO sequences, remove one 1st nucleotide and one N were removed for AOA and two 1st nucleotides were removed for AOB
@@ -184,17 +179,17 @@ echo "==========================================================================
 
 #####################################################
 echo "============================================================================================";
-echo "### STEP 3. Comparing the AMOA-SEQ curated ASV sequences to curated AMOA databases ###"
+echo "### STEP 4. Comparing the AMOA-SEQ curated ASV sequences to curated AMOA databases ###"
 # Annotating curated ASVs using manually curated databases
 diamond blastx --db ref.$organism.amoA.dmnd  --query AMOA-SEQ-curated.$organism.ASVs.fa --out diamond.output.curateddb.AMOA-SEQ-curated.$organism.ASVs.tsv --evalue 0.00001  --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore stitle qlen slen qcovhsp
 awk '!x[$1]++' diamond.output.curateddb.AMOA-SEQ-curated.$organism.ASVs.tsv > besthit.diamond.output.curateddb.AMOA-SEQ-curated.$organism.ASVs.tsv
-echo "### STEP 3. AMOA-SEQ ASV annotation using curated AMOA databases done ###"
+echo "### STEP 4. AMOA-SEQ ASV annotation using curated AMOA databases done ###"
 echo "============================================================================================";
 #####################################################
 
 #####################################################
 echo "============================================================================================";
-echo "### STEP 4. ASV clustering into OTUs and generating OTU count table ###"
+echo "### STEP 5. ASV clustering into OTUs and generating OTU count table ###"
 cd-hit-est -i AMOA-SEQ-curated.$organism.ASVs.fa -o AMOA-SEQ.$organism.OTUs.fa -c 0.97 -n 5
 python ASV-to-OTU.py -i AMOA-SEQ.$organism.OTUs.fa.clstr -o OTU_ASV_ID.txt
 python OTU-table.py -i AMOA-SEQ-curated.$organism.ASVs.counts.tsv -t OTU_ASV_ID.txt -o AMOA-SEQ.$organism.OTUs.counts.tsv
@@ -210,34 +205,34 @@ awk '!x[$1]++' diamond.output.curateddb.AMOA-SEQ.$organism.OTUs.tsv > besthit.di
 awk '{print $1, "\t", $13}' besthit.diamond.output.curateddb.AMOA-SEQ.$organism.OTUs.tsv > ID-Taxa
 grep ">" AMOA-SEQ.$organism.OTUs.fa | sed 's/>//' > OTU-ID
 awk 'FNR==NR{a[$1];next} $1 in a{print; delete a[$1]} END{for (i in a) print i, "NA"}' OTU-ID ID-Taxa > AMOA-SEQ.$organism.OTUs.taxa.tsv
-echo "### STEP 4. AMOA-SEQ AMO-OTU count table generated and annotation done ###"
+echo "### STEP 5. AMOA-SEQ AMO-OTU count table generated and annotation done ###"
 echo "============================================================================================";
 #####################################################
 
 #####################################################
 echo "============================================================================================";
-echo "### STEP 4. translating the ASV sequences to PSV sequences ###"
-cd-hit -i AMOA-SEQ-curated.$organism.ASVs.faa -o AMOA-SEQ.$organism.PSV.faa -c 1 -n 5
-sed 's/ASV/PSV/g' AMOA-SEQ.$organism.PSV.faa > tmp && mv tmp AMOA-SEQ.$organism.PSV.faa
-echo "### STEP 4. translating the ASV sequences to PSV sequences and dereplication of PSVs, done ###"
+echo "### STEP 6. translating the ASV sequences to PSV sequences ###"
+cd-hit -i AMOA-SEQ-curated.$organism.ASVs.faa -o AMOA-SEQ.$organism.PSVs.faa -c 1 -n 5
+sed 's/ASV/PSV/g' AMOA-SEQ.$organism.PSVs.faa > tmp && mv tmp AMOA-SEQ.$organism.PSVs.faa
+echo "### STEP 6. translating the ASV sequences to PSV sequences and dereplication of PSVs, done ###"
 echo "============================================================================================";
 #####################################################
 
 #####################################################
 echo "============================================================================================";
-echo "### STEP 5. Annotating the PSV sequences against curated AMOA database using BLASTp ###"
-blastp -query AMOA-SEQ.$organism.PSV.faa -subject ref.$organism.amoA.faa -outfmt '6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore salltitles' -out blastp.output.AMOA-SEQ.$organism.PSVs.tsv -num_threads 16 -evalue 0.00001
+echo "### STEP 7. Annotating the PSV sequences against curated AMOA database using BLASTp ###"
+blastp -query AMOA-SEQ.$organism.PSVs.faa -subject ref.$organism.amoA.faa -outfmt '6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore salltitles' -out blastp.output.AMOA-SEQ.$organism.PSVs.tsv -num_threads 16 -evalue 0.00001
 awk '!x[$1]++' blastp.output.AMOA-SEQ.$organism.PSVs.tsv  > besthit.blastp.output.AMOA-SEQ.$organism.PSVs.tsv
-echo "### STEP 5. AMOA-SEQ AMO-PSV Annotation done ###"
+echo "### STEP 7. AMOA-SEQ AMO-PSV Annotation done ###"
 echo "============================================================================================";
 #####################################################
 echo "============================================================================================";
-echo "### STEP 6. Aligning of the PSV sequences and curated AMOA sequences for generating phylogenetic tree ###"
+echo "### STEP 8. Aligning of the PSV sequences and curated AMOA sequences for generating phylogenetic tree ###"
 cat AMOA-SEQ.$organism.PSV.faa ref.$organism.amoA.faa > tree.$organism.faa
 muscle -super5 tree.$organism.faa -output tree.$organism.afa
 trimal -in tree.$organism.afa -out tree.$organism.trim.afa -nogaps
 FastTree tree.$organism.trim.afa > tree.$organism.nwk
-echo "### STEP 6. Phylogenetic tree generated ### "
+echo "### STEP 8. Phylogenetic tree generated ### "
 echo "============================================================================================";
 #####################################################
 rm ID ASV-ID Annotated-ASV-ID ID-Taxa OTU-ID ASV_OTU_ID.txt
@@ -252,4 +247,3 @@ mv *PSV* ./$organism.PSV-analysis
 mv *tree* ./$organism.Phylogenetic-analysis
 mv *OTUs* ./$organism.OTU-analysis
 #####################################################
-
