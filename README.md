@@ -40,7 +40,7 @@ chmod u+x AMOA-SEQ.sh # make the script executable
 ````
 
 ## AMOA sequence databases
-•	AMO_database.faa: all AMOA sequences downloaded from JGI IMG (https://img.jgi.doe.gov/) and NCBI (https://www.ncbi.nlm.nih.gov/). List of accessions and detail of the gene set were shown in AMO_database.tsv 
+•	````AMO_database.faa````: all AMOA sequences downloaded from JGI IMG (https://img.jgi.doe.gov/) and NCBI (https://www.ncbi.nlm.nih.gov/). List of accessions and detail of the gene set were shown in AMO_database.tsv 
 
 •	````ref.AOA.amoA.faa````: curated archaeal amoA sequences with defined lineage from Alves et al. 2018
 
