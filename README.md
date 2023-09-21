@@ -86,19 +86,22 @@ sh AMOA-SEQ.sh -e COM-output -i /home/ampere/slee/AMOA-SEQ/TEST-COM-Fastq -f AGG
 
 **Step 0)** Making AMOA databases ````AMO.dmnd```` using Diamond tool (Buchfink et al. 2021) in ````$exp_name```` working directory.
 
-**Step 1)** Running the DADA2 pipeline ````dada_AMO.R```` to generate the amplicon sequence variant (ASV) sequences ````out.{organism}.ASVs.fa```` and ASV count table ````out.{organism}.ASVs.counts.tsv```` across different samples in $exp_name working directory.
+**Step 1)** Running the DADA2 pipeline ````dada_AMO.R```` to generate the amplicon sequence variant (ASV) sequences ````out.DADA2.$organism.ASVs.fa```` and ASV count table ````out.DADA2.$organism.ASVs.counts.tsv```` across different samples in $exp_name working directory.
 
-**Step 2)** Select the AMOA ASV sequences according to expected amplicon size using Seqkit tool (Shen et al. 2016). Generating correct ASV sequences ````correct.{organism}.ASVs.fa```` and ASV count table ````correct.{organism}.ASVs.counts.tsv```` across different samples. 
+**Step 2)** Select the AMOA ASV sequences according to expected amplicon size using Seqkit tool (Shen et al. 2016). Generating correct ASV sequences ````out.DADA2.correct-size.$organism.ASVs.fa```` and ASV count table ````out.DADA2.correct-size.$organism.ASVs.counts.tsv```` across different samples. 
 
-**Step 3)** Annotating the AMOA ASV sequences against AMOA database (NR & IMG-JGI) and curated AMOA databases with Diamond blastx (Buchfink et al. 2021). Generating annotated ASV sequences ````annotated.{organism}.ASVs.fa```` and ASV count table ````annotated.{organism}.ASVs.counts.tsv```` across different samples. 
+**Step 3)** Correct AmoA sequence curation using the AMOA database (NR & IMG-JGI) with Diamond blastx (Buchfink et al. 2021) and manually curated conserved AMOA protein sequences using python scripts. Prior to correct translation, first nucleotide & two first nucleotides are removed from AOA & AOB ASV sequences. 
+Generating annotated ASV sequences (nucleotide sequence, protein sequence) ````annotated.DADA2.{organism}.ASVs.fa````, ````annotated.DADA2.{organism}.ASVs.faa````, and AMOA-SEQ curated ASV sequences (nucleotide sequence, protein sequence) ````AMOA-SEQ-curated.$organism.ASVs.fa````,  ````AMOA-SEQ-curated.$organism.ASVs.faa````, and the ASV count table ````annotated.{organism}.ASVs.counts.tsv````, ````AMOA-SEQ-curated.{organism}.ASVs.counts.tsv```` across different samples. 
 
-**Step 4)** Clustering the AMOA ASV sequences into OTUs ````out.$organism.OTUs.fa```` with 97% of sequence identity using CDHIT tool (Li et al. 2006). Generating OTU count table ````out.{organism}.OTUs.counts.tsv```` across different samples and annotating OTUs with curated AMOA databases with Diamond blastx (Buchfink et al. 2021).
+**Step 4)** Comparing the AMOA-SEQ curated ASV sequences to curated AMOA databases with Diamond blastx (Buchfink et al. 2021). Generating diamond blastx output files (every hits and best-hit): ````diamond.output.curateddb.AMOA-SEQ-curated.$organism.ASVs.tsv````, ````besthit.diamond.output.curateddb.AMOA-SEQ-curated.$organism.ASVs.tsv````
 
-**Step 5)** Prior to correct translation, first nucleotide & two first nucleotides are removed from AOA & AOB and COMMAMOX ASV sequences. Translating the annotated ASV sequences to protein sequence variant (PSV) sequences ````annotated.{organism}.ASVs.faa```` using Seqkit tool (Shen et al. 2016). Dereplicating the PSV sequences ````{organism}.PSV.faa````using CDHIT tool (Li et al. 2006)
+**Step 5)** Clustering the AMOA ASV sequences into OTUs ````AMOA-SEQ.$organism.OTUs.fa```` with 97% of sequence identity using CDHIT tool (Li et al. 2006) and generating OTU count table across different samples ````AMOA-SEQ.$organism.OTUs.counts.tsv```` and annotating OTUs with curated AMOA databases with Diamond blastx (Buchfink et al. 2021). Generating diamond blastx output files (every hits and best-hit): ````diamond.output.curateddb.AMOA-SEQ.$organism.OTUs.tsv````, ````besthit.diamond.output.curateddb.AMOA-SEQ.$organism.OTUs.tsv````
 
-**Step 6)** Annotating the PSV sequences against curated AMOA database using BLASTp 
+**Step 6)** Translating the AMOA-SEQ curated ASV sequences to protein sequence variant (PSV) sequences ````AMOA-SEQ.$organism.PSVs.faa```` using Seqkit tool (Shen et al. 2016). Dereplicating the PSV sequences ````{organism}.PSV.faa````using CDHIT tool (Li et al. 2006)
 
-**Step 7)** Aligning of the PSV sequences ````{organism}.PSV.faa```` and curated AMOA sequences ````ref.{organism}.amoA.faa```` using MUSCLE (Edgar et al. 2004) and spurious sequences or poorly aligned regions were removed using trimAI (Capella-Gutiérrez · 2009). ````tree.$organism.trim.afa```` is used for generating phylogenetic tree ````tree.{organism}.nwk```` using FastTree (Price et al. 2009).
+**Step 7)** Annotating the PSV sequences against curated AMOA database using BLASTp. Generating diamond blastx output files (every hits and best-hit): ````blastp.output.AMOA-SEQ.$organism.PSVs.tsv````, ````besthit.blastp.output.AMOA-SEQ.$organism.PSVs.tsv````
+
+**Step 8)** Aligning of the PSV sequences ````AMOA-SEQ.{organism}.PSVs.faa```` and curated AMOA sequences ````ref.{organism}.amoA.faa```` using MUSCLE (Edgar et al. 2004) and spurious sequences or poorly aligned regions were removed using trimAI (Capella-Gutiérrez · 2009). ````tree.$organism.trim.afa```` is used for generating phylogenetic tree ````tree.{organism}.nwk```` using FastTree (Price et al. 2009).
 
 
 
