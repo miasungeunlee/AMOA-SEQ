@@ -109,55 +109,63 @@ Generating annotated ASV sequences (nucleotide sequence, protein sequence) ````a
 ````
 {organism}.ASV-analysis # directory
 ````
-•	````track.{organism}.summary.tsv````: DADA2 output summary containing quality control, denoising, number of merged sequences, number of chimeras in each sample. 
+•	````out.DADA2.$organism.ASVs.track-summary.tsv````: DADA2 output summary containing quality control, denoising, number of merged sequences, number of chimeras in each sample. 
 
-•	````out.{organism}.ASVs.fa````: generated amplicon sequence variants (however, some ASVs may be not real AMOA sequences due to sequencing error, not recommended to directly use these ASV sequences)
+•	````out.DADA2.$organism.ASVs.fa````: generated amplicon sequence variants (however, this file could contain the ambiguous sequences, thus not recommended to directly use this ASV file).
 
-•	````out.{organism}.ASVs.counts.tsv````: ASV count table from different samples
+•	````out.DADA2.$organism.ASVs.counts.tsv````: DADA2 ASV count table from different samples
 
-•	````correct.{organism}.ASVs.fa````: selected ASVs according to expected amplicon size (option -t) 
+•	````out.DADA2.correct-size.$organism.ASVs.fa````: selected ASVs according to expected amplicon size (option -t) 
 
-•	````correct.{organism}.ASVs.counts.tsv````: selected ASV count table from different samples
+•	````out.DADA2.correct-size.$organism.ASVs.counts.tsv````: correct size ASV count table from different samples
 
-•	````diamond.output.{organism}.ASVs.tsv````: annotation of ASVs using total AMOA database
+•	````annotated.DADA2.$organism.ASVs.fa````: DADA2 ASVs with correct size and matched to AMOA database. 
 
-•	````besthit.diamond.output.{organism}.ASVs.tsv````: besthit of annoated ASVs using total AMOA database
+•	````annotated.DADA2.$organism.ASVs.faa````: translated DADA2 ASVs with correct size and matched to AMOA database. 
 
-•	````diamond.output.curateddb.{organism}.ASVs.tsv````: annotation of ASVs using curated AMOA database  
+•	````AMOA-SEQ-curated.$organism.ASVs.fa````: Ambiguous sequences were removed using using the AMO databases and conserved protein sequence (those are confident and genuine AMOA sequences).
 
-•	````besthit.diamond.output.curateddb.{organism}.ASVs.tsv````: besthit of annoated ASVs using curated AMOA database  
+•	````AMOA-SEQ-curated.$organism.ASVs.faa````: translated AMOA-SEQ curated ASVs. 
 
-•	````annotated.{organism}.ASVs.fa````: ASVs matched to AMOA database (those are confident and genuine AMOA sequences). 
+•	````AMOA-SEQ-curated.$organism.ASVs.counts.tsv````: AMOA-SEQ curated ASV count table from different samples (recommanded to use this file for further bioinformatic analysis). 
 
-•	````annotated.{organism}.ASVs.counts.tsv````: annotated ASV count table from different samples (recommended for alpha-diversity analysis (e.g. diversity indexes)) 
+•	````diamond.output.DADA2.$organism.ASVs.tsv````: annotation of DADA2 ASVs using total AMOA database
+
+•	````besthit.diamond.output.DADA2.$organism.ASVs.tsv````: besthit of annoated ASVs using total AMOA database
+
+•	````diamond.output.curateddb.AMOA-SEQ-curated.$organism.ASVs.tsv````: annotation of AMOA-SEQ curated ASVs using curated AMOA database  
+
+•	````besthit.diamond.output.curateddb.AMOA-SEQ-curated.$organism.ASVs.tsv````: besthit of AMOA-SEQ curated ASVs using curated AMOA database  
+
+
 
 ````
 {organism}.OTU-analysis # directory
 ````
-•	````out.{organism}.OTUs.fa````: generated OTU sequences
+•	````AMOA-SEQ.{organism}.OTUs.fa.clstr````: cd-hit clustering output file
 
-•	````out.{organism}.OTUs.counts.tsv````: OTU count table from different samples
+•	````AMOA-SEQ.{organism}.OTUs.fa````: generated OTU sequences
 
-•	````diamond.output.curateddb.{organism}.OTUs.tsv````: annotation of OTUs using curated AMOA database  
+•	````AMOA-SEQ.{organism}.OTUs.counts.tsv````: OTU count table from different samples
 
-•	````besthit.diamond.output.curateddb.{organism}.OTUs.tsv````: besthit of annoated OTUs using curated AMOA database  
+•	````diamond.output.curateddb.AMOA-SEQ.{organism}.OTUs.tsv````: annotation of OTUs using curated AMOA database  
 
-•	````out.{organism}.OTUs.taxa.tsv````: OTU taxa information 
+•	````besthit.diamond.output.curateddb.AMOA-SEQ.{organism}.OTUs.tsv````: besthit of annoated OTUs using curated AMOA database  
+
+•	````AMOA-SEQ.{organism}.OTUs.taxa.tsv````: OTU taxa information 
 
 
 ````
 {organism}.PSV-analysis # directory
 ````
 
-•	````annotated.{organism}.ASVs.faa````: translate ASV sequence to amino acid sequences
+•	````AMOA-SEQ.{organism}.PSVs.faa.clstr````: clustering of translated ASV sequences with 100% identity
 
-•	````{organism}.PSV.faa.clstr````: clustering of translated ASV sequences with 100% identity
+•	````AMOA-SEQ.{organism}.PSVs.faa````: Unique protein sequence variants
 
-•	````{organism}.PSV.faa````: Unique protein sequence variants
+•	````blastp.output.AMOA-SEQ.{organism}.PSVs.tsv````: (recommended for beta-diversity analysis (e.g. phylogenetic tree)): annotation of PSVs using curated AMOA database
 
-•	````blastp.output.{organism}.PSVs.tsv````: (recommended for beta-diversity analysis (e.g. phylogenetic tree)): annotation of PSVs using curated AMOA database
-
-•	````besthit.blastp.output.{organism}.PSVs.tsv````: besthit of annotated PSVs using curated AMOA database 
+•	````besthit.blastp.output.AMOA-SEQ.{organism}.PSVs.tsv````: besthit of annotated PSVs using curated AMOA database 
 
 ````
 {organism}.phylogeny-analysis # directory
