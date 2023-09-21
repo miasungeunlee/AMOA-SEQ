@@ -105,13 +105,12 @@ echo "==========================================================================
 
 #####################################################
 echo "============================================================================================";
-
 echo "### STEP 0. Making AMOA database in $exp_name working directory ###"
 mkdir $exp_name
 cp dada_AMO.R ./$exp_name/
 gunzip AMO_database.faa.gz
 diamond makedb --in AMO_database.faa  --db AMO.dmnd
-diamond makedb --in ref.$organism.amoA.faa  --db ref.$organism.amoA.dmnd
+diamond makedb --in ref.$organism.amoA.faa --db ref.$organism.amoA.dmnd
 mv AMO.dmnd ./$exp_name/
 mv ref.$organism.amoA.dmnd ./$exp_name/
 cp ref.$organism.amoA.faa ./$exp_name/
@@ -124,74 +123,102 @@ echo "==========================================================================
 echo "### STEP 1. DADA2 analysis in $exp_name working directory ###"
 # Call R script with command-line options as arguments
 Rscript dada_AMO.R "${exp_name}" "${data_directory}" "${FWD}" "${REV}" "${min_length}" "${trunc_length}" "${just_concat}" "${select_length}" "${num_nucleotide}" "${num_nucleotide_gap}" "${organism}"
-
-mv out.ASVs.fa out.$organism.ASVs.fa
-mv out.ASVs.counts.tsv out.$organism.ASVs.counts.tsv
-mv track-summary.tsv out.$organism.ASVs.track-summary.tsv
+mv out.ASVs.fa out.DADA2.$organism.ASVs.fa
+mv out.ASVs.counts.tsv out.DADA2.$organism.ASVs.counts.tsv
+mv track-summary.tsv out.DADA2.$organism.ASVs.track-summary.tsv
 echo "### STEP 1. DADA2 analysis done ###"
 echo "============================================================================================";
 #####################################################
 
 #####################################################
+### Although DADA2 tool pipeline removed the ambigous sequences using its error model, it can produce several ambigous sequences depending on the datasets.
+### Thus, the ambigous sequences were removed by
+###   - checking expected amplicon sizes 
+###   - blasting several AMO databases
+###   - checking conserved regions of manually curated AMO databases and several AMO datasets at protein sequence level using final.$organism.py script
+### 
+#####################################################
+#####################################################
 echo "============================================================================================";
 echo "### STEP 2. Select the ASV sequences according to expected amplicon size ###"
-seqkit seq -m $select_length -M $select_length out.$organism.ASVs.fa > correct.$organism.ASVs.fa
-grep ">" correct.$organism.ASVs.fa | sed 's/>//g' > ASV-ID
-awk 'FNR==NR{a[$1];next} $1 in a{print}' ASV-ID out.$organism.ASVs.counts.tsv > correct.$organism.ASVs.counts.tsv
-awk 'NR==1 {print}' out.$organism.ASVs.counts.tsv > ID
-cat ID correct.$organism.ASVs.counts.tsv > tmp && mv tmp correct.$organism.ASVs.counts.tsv
-echo "### STEP 2. Correct size of the ASV sequences was selected ###"
+seqkit seq -m $select_length -M $select_length out.DADA2.$organism.ASVs.fa > out.DADA2.correct-size.$organism.ASVs.fa
+grep ">" out.DADA2.correct-size.$organism.ASVs.fa | sed 's/>//g' > ASV-ID
+awk 'FNR==NR{a[$1];next} $1 in a{print}' ASV-ID out.DADA2.$organism.ASVs.counts.tsv > out.DADA2.correct-size.$organism.ASVs.counts.tsv
+awk 'NR==1 {print}' out.DADA2.$organism.ASVs.counts.tsv > ID
+cat ID out.DADA2.correct-size.$organism.ASVs.counts.tsv > tmp && mv tmp out.DADA2.correct-size.$organism.ASVs.counts.tsv
+echo "### STEP 2. Correct size of the DADA2 generated ASV sequences was selected ###"
 echo "============================================================================================";
-#####################################################
+
+echo "============================================================================================";
+echo "### STEP 3. Correct AmoA sequence curation using the AMO databases and conserved protein sequence ###"
+diamond blastx --db AMO.dmnd  --query out.DADA2.$organism.ASVs.fa --out diamond.output.DADA2.$organism.ASVs.tsv --evalue 0.00001  --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore stitle qlen slen qcovhsp
+awk '!x[$1]++' diamond.output.DADA2.$organism.ASVs.tsv > besthit.diamond.output.DADA2.$organism.ASVs.tsv
+awk '{print $1}' diamond.output.DADA2.$organism.ASVs.tsv | sort -u > Annotated-ASV-ID
+seqkit grep -n -f Annotated-ASV-ID out.DADA2.correct-size.$organism.ASVs.fa > annotated.DADA2.$organism.ASVs.fa
+
+
+sh AMOA-SEQ.sh -e AOA-output -i /home/ampere/slee/AMOA-SEQ/TEST-AOA-Fastq -f ATGGTCTGGCTWAGACG -r GCCATCCATCTGTATGTCCA -m 200 -l 200 -c TRUE -t 410 -n 2 -o AOA
+sh AMOA-SEQ.sh -e AOB-output -i /home/ampere/slee/AMOA-SEQ/TEST-AOB-Fastq -f GGGGTTTCTACTGGTGGT -r CCCCTCKGSAAAGCCTTCTTC -m 231 -l 250 -c FALSE -t 452 -n 3 -o AOB
+sh AMOA-SEQ.sh -e COM-output -i /home/ampere/slee/AMOA-SEQ/TEST-COM-Fastq -f AGGNGAYTGGGAYTTCTGG -r CGGACAWABRTGAABCCCAT -m 204 -l 250 -c FALSE -t 396 -n 1 -o COM
+
+
+# In order to correct translation of AMO sequences, remove one 1st nucleotide and one N were removed for AOA and two 1st nucleotides were removed for AOB
+sed 's/NNNNNNNNNN/NNNNNNNNN/g' annotated.DADA2.AOA.ASVs.fa > tmp && mv tmp annotated.DADA2.AOA.ASVs.fa
+seqkit seq -w 0 annotated.DADA2.$organism.ASVs.fa > tmp && mv tmp annotated.DADA2.$organism.ASVs.fa
+awk '/^>/ {print $0} /^[^>]/ {print substr($0,'$num_nucleotide')}' annotated.DADA2.$organism.ASVs.fa > tmp && mv tmp annotated.DADA2.$organism.ASVs.fa
+seqkit translate -f 1 annotated.DADA2.$organism.ASVs.fa > annotated.DADA2.$organism.ASVs.faa
+### removing the ambigous sequences using final.$organism.py python scripts:
+python final.$organism.py -i annotated.DADA2.$organism.ASVs.faa -o $organism.err-seq-ID
+sed 's/X//g' annotated.DADA2.$organism.ASVs.faa > tmp && mv tmp annotated.DADA2.$organism.ASVs.faa
+seqkit grep -v -n -f $organism.err-seq-ID annotated.DADA2.$organism.ASVs.fa > AMOA-SEQ-curated.$organism.ASVs.fa
+seqkit grep -v -n -f $organism.err-seq-ID annotated.DADA2.$organism.ASVs.faa > AMOA-SEQ-curated.$organism.ASVs.faa
+seqkit grep -n -f $organism.err-seq-ID annotated.DADA2.$organism.ASVs.fa > AMOA-SEQ-ambigous.$organism.ASVs.fa
+seqkit grep -n -f $organism.err-seq-ID annotated.DADA2.$organism.ASVs.faa > AMOA-SEQ-ambigous.$organism.ASVs.faa
+
+grep ">" AMOA-SEQ-curated.$organism.ASVs.fa | sed 's/>//g' > AMOA-SEQ-curated.$organism.ASVs-ID
+awk 'FNR==NR{a[$1];next} $1 in a{print}' AMOA-SEQ-curated.$organism.ASVs-ID out.DADA2.$organism.ASVs.counts.tsv > AMOA-SEQ-curated.$organism.ASVs.counts.tsv
+awk 'NR==1 {print}' out.DADA2.$organism.ASVs.counts.tsv > ID
+cat ID AMOA-SEQ-curated.$organism.ASVs.counts.tsv > tmp && mv tmp AMOA-SEQ-curated.$organism.ASVs.counts.tsv
+echo "### STEP 3. AMOA-SEQ ASV curation done ###"
+echo "============================================================================================";
 
 #####################################################
 echo "============================================================================================";
-echo "### STEP 3. Comparing the ASV sequences to AMOA database ###"
-diamond blastx --db AMO.dmnd  --query out.$organism.ASVs.fa --out diamond.output.$organism.ASVs.tsv --evalue 0.00001  --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore stitle qlen slen qcovhsp
-awk '!x[$1]++' diamond.output.$organism.ASVs.tsv > besthit.diamond.output.$organism.ASVs.tsv
-awk '{print $1}' diamond.output.$organism.ASVs.tsv | sort -u > Annotated-ASV-ID
-awk 'FNR==NR{a[$1];next} $1 in a{print}' Annotated-ASV-ID out.$organism.ASVs.counts.tsv > annotated.$organism.ASVs.counts.tsv
-cat ID annotated.$organism.ASVs.counts.tsv > tmp && mv tmp annotated.$organism.ASVs.counts.tsv
-seqkit grep -n -f Annotated-ASV-ID correct.$organism.ASVs.fa > annotated.$organism.ASVs.fa
-diamond blastx --db ref.$organism.amoA.dmnd  --query out.$organism.ASVs.fa --out diamond.output.curateddb.$organism.ASVs.tsv --evalue 0.00001  --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore stitle qlen slen qcovhsp
-awk '!x[$1]++' diamond.output.curateddb.$organism.ASVs.tsv > besthit.diamond.output.curateddb.$organism.ASVs.tsv
-echo "### STEP 3. ASV annotation done ###"
+echo "### STEP 3. Comparing the AMOA-SEQ curated ASV sequences to curated AMOA databases ###"
+# Annotating curated ASVs using manually curated databases
+diamond blastx --db ref.$organism.amoA.dmnd  --query AMOA-SEQ-curated.$organism.ASVs.fa --out diamond.output.curateddb.AMOA-SEQ-curated.$organism.ASVs.tsv --evalue 0.00001  --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore stitle qlen slen qcovhsp
+awk '!x[$1]++' diamond.output.curateddb.AMOA-SEQ-curated.$organism.ASVs.tsv > besthit.diamond.output.curateddb.AMOA-SEQ-curated.$organism.ASVs.tsv
+echo "### STEP 3. AMOA-SEQ ASV annotation using curated AMOA databases done ###"
 echo "============================================================================================";
 #####################################################
 
 #####################################################
 echo "============================================================================================";
 echo "### STEP 4. ASV clustering into OTUs and generating OTU count table ###"
-cd-hit-est -i annotated.$organism.ASVs.fa -o out.$organism.OTUs.fa -c 0.97 -n 5
-python ASV-to-OTU.py -i out.$organism.OTUs.fa.clstr -o OTU_ASV_ID.txt
-python OTU-table.py -i annotated.$organism.ASVs.counts.tsv -t OTU_ASV_ID.txt -o out.$organism.OTUs.counts.tsv
+cd-hit-est -i AMOA-SEQ-curated.$organism.ASVs.fa -o AMOA-SEQ.$organism.OTUs.fa -c 0.97 -n 5
+python ASV-to-OTU.py -i AMOA-SEQ.$organism.OTUs.fa.clstr -o OTU_ASV_ID.txt
+python OTU-table.py -i AMOA-SEQ-curated.$organism.ASVs.counts.tsv -t OTU_ASV_ID.txt -o AMOA-SEQ.$organism.OTUs.counts.tsv
 awk '{print $2, "\t", $1}' OTU_ASV_ID.txt | sort -u > ASV_OTU_ID.txt
 sed 's/ //g' ASV_OTU_ID.txt > tmp && mv tmp ASV_OTU_ID.txt
 sed 's/ //g' ASV_OTU_ID.txt > tmp && mv tmp ASV_OTU_ID.txt
 awk 'BEGIN { FS="\t" }
      NR==FNR { map[$1]=$2; next }
      /^>/ { print ">" map[substr($0,2)]; next }
-     { print }' ASV_OTU_ID.txt out.$organism.OTUs.fa > tmp && mv tmp out.$organism.OTUs.fa
-diamond blastx --db ref.$organism.amoA.dmnd --query out.$organism.OTUs.fa --out diamond.output.curateddb.$organism.OTUs.tsv --evalue 0.00001  --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore stitle qlen slen qcovhsp
-awk '!x[$1]++' diamond.output.curateddb.$organism.OTUs.tsv > besthit.diamond.output.curateddb.$organism.OTUs.tsv
-awk '{print $1, "\t", $13}' besthit.diamond.output.curateddb.$organism.OTUs.tsv > ID-Taxa
-grep ">" out.$organism.OTUs.fa | sed 's/>//' > OTU-ID
-awk 'FNR==NR{a[$1];next} $1 in a{print; delete a[$1]} END{for (i in a) print i, "NA"}' OTU-ID ID-Taxa > out.$organism.OTUs.taxa.tsv
-echo "### STEP 4. OTU count table generated and annotation done ###"
+     { print }' ASV_OTU_ID.txt AMOA-SEQ.$organism.OTUs.fa > tmp && mv tmp AMOA-SEQ.$organism.OTUs.fa
+diamond blastx --db ref.$organism.amoA.dmnd --query AMOA-SEQ.$organism.OTUs.fa --out diamond.output.curateddb.AMOA-SEQ.$organism.OTUs.tsv --evalue 0.00001  --outfmt 6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore stitle qlen slen qcovhsp
+awk '!x[$1]++' diamond.output.curateddb.AMOA-SEQ.$organism.OTUs.tsv > besthit.diamond.output.curateddb.AMOA-SEQ.$organism.OTUs.tsv
+awk '{print $1, "\t", $13}' besthit.diamond.output.curateddb.AMOA-SEQ.$organism.OTUs.tsv > ID-Taxa
+grep ">" AMOA-SEQ.$organism.OTUs.fa | sed 's/>//' > OTU-ID
+awk 'FNR==NR{a[$1];next} $1 in a{print; delete a[$1]} END{for (i in a) print i, "NA"}' OTU-ID ID-Taxa > AMOA-SEQ.$organism.OTUs.taxa.tsv
+echo "### STEP 4. AMOA-SEQ AMO-OTU count table generated and annotation done ###"
 echo "============================================================================================";
 #####################################################
 
 #####################################################
 echo "============================================================================================";
 echo "### STEP 4. translating the ASV sequences to PSV sequences ###"
-# In order to correct translation, remove 2 first nucleotides & 1st nucleotide and 2N were removed from comammox & archaeal amoA amplicon
-sed 's/NNNNNNNNNN/NNNNNNNNN/g' annotated.AOA.ASVs.fa > tmp && mv tmp annotated.AOA.ASVs.fa
-seqkit seq -w 0 annotated.$organism.ASVs.fa > tmp && mv tmp annotated.$organism.ASVs.fa
-awk '/^>/ {print $0} /^[^>]/ {print substr($0,'$num_nucleotide')}' annotated.$organism.ASVs.fa > tmp && mv tmp annotated.$organism.ASVs.fa
-seqkit translate -f 1 annotated.$organism.ASVs.fa > annotated.$organism.ASVs.faa
-sed 's/X//g' annotated.$organism.ASVs.faa > tmp && mv tmp annotated.$organism.ASVs.faa
-cd-hit -i annotated.$organism.ASVs.faa -o $organism.PSV.faa -c 1 -n 5
-sed 's/ASV/PSV/g' $organism.PSV.faa > tmp && mv tmp $organism.PSV.faa
+cd-hit -i AMOA-SEQ-curated.$organism.ASVs.faa -o AMOA-SEQ.$organism.PSV.faa -c 1 -n 5
+sed 's/ASV/PSV/g' AMOA-SEQ.$organism.PSV.faa > tmp && mv tmp AMOA-SEQ.$organism.PSV.faa
 echo "### STEP 4. translating the ASV sequences to PSV sequences and dereplication of PSVs, done ###"
 echo "============================================================================================";
 #####################################################
@@ -199,32 +226,30 @@ echo "==========================================================================
 #####################################################
 echo "============================================================================================";
 echo "### STEP 5. Annotating the PSV sequences against curated AMOA database using BLASTp ###"
-# AOA
-blastp -query $organism.PSV.faa -subject ref.$organism.amoA.faa -outfmt '6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore salltitles' -out blastp.output.$organism.PSVs.tsv -num_threads 16 -evalue 0.00001
-awk '!x[$1]++' blastp.output.$organism.PSVs.tsv  > besthit.blastp.output.$organism.PSVs.tsv
-echo "### STEP 5. Annotation done ###"
+blastp -query AMOA-SEQ.$organism.PSV.faa -subject ref.$organism.amoA.faa -outfmt '6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore salltitles' -out blastp.output.AMOA-SEQ.$organism.PSVs.tsv -num_threads 16 -evalue 0.00001
+awk '!x[$1]++' blastp.output.AMOA-SEQ.$organism.PSVs.tsv  > besthit.blastp.output.AMOA-SEQ.$organism.PSVs.tsv
+echo "### STEP 5. AMOA-SEQ AMO-PSV Annotation done ###"
 echo "============================================================================================";
 #####################################################
 echo "============================================================================================";
 echo "### STEP 6. Aligning of the PSV sequences and curated AMOA sequences for generating phylogenetic tree ###"
-cat $organism.PSV.faa ref.$organism.amoA.faa > tree.$organism.faa
+cat AMOA-SEQ.$organism.PSV.faa ref.$organism.amoA.faa > tree.$organism.faa
 muscle -super5 tree.$organism.faa -output tree.$organism.afa
 trimal -in tree.$organism.afa -out tree.$organism.trim.afa -nogaps
 FastTree tree.$organism.trim.afa > tree.$organism.nwk
 echo "### STEP 6. Phylogenetic tree generated ### "
 echo "============================================================================================";
 #####################################################
-rm ID ASV-ID Annotated-ASV-ID ID-Taxa OTU-ID 
+rm ID ASV-ID Annotated-ASV-ID ID-Taxa OTU-ID ASV_OTU_ID.txt
 mkdir $organism.ASV-analysis
 mkdir $organism.PSV-analysis
 mkdir $organism.Phylogenetic-analysis
 mkdir $organism.OTU-analysis
 rm *dmnd *R
-rm *.py OTU_ASV_ID.txt ASV_OTU_ID.txt
+rm *.py
 mv *ASVs* ./$organism.ASV-analysis
 mv *PSV* ./$organism.PSV-analysis
 mv *tree* ./$organism.Phylogenetic-analysis
 mv *OTUs* ./$organism.OTU-analysis
-rm *.faa
 #####################################################
 
