@@ -42,11 +42,11 @@ chmod u+x AMOA-SEQ.sh # make the script executable
 ## AMOA sequence databases
 •	AMO_database.faa: all AMOA sequences downloaded from JGI IMG (https://img.jgi.doe.gov/) and NCBI (https://www.ncbi.nlm.nih.gov/). List of accessions and detail of the gene set were shown in AMO_database.tsv 
 
-•	ref.AOA.amoA.faa: curated archaeal amoA sequences with defined lineage from Alves et al. 2018
+•	````ref.AOA.amoA.faa````: curated archaeal amoA sequences with defined lineage from Alves et al. 2018
 
-•	ref.COM.amoA.faa: curated archaeal amoA sequences from Palomo et al. 2022
+•	````ref.COM.amoA.faa````: curated archaeal amoA sequences from Palomo et al. 2022
 
-•	ref.AOB.amoA.faa: curated Nitrosospira amoA sequences from Aigle et al. 2019 and Nitrosomonas amoA sequences were downloaded from JGI IMG site and curated (Lee et al. 2023) 
+•	````ref.AOB.amoA.faa````: curated Nitrosospira amoA sequences from Aigle et al. 2019 and Nitrosomonas amoA sequences were downloaded from JGI IMG site and curated (Lee et al. 2023) 
 
 ## Quick run
 ````
