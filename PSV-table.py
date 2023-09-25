@@ -17,6 +17,6 @@ asv_counts = pd.read_csv(args.input, sep="\t", index_col=0)
 # Read in the OTU list file
 psv_list = pd.read_csv(args.otulist, sep="\t", index_col=1, header=None, names=["OTU_ID"])
 # Group the ASV counts by their corresponding OTU
-psv_counts = asv_counts.groupby(psv_list["OTU_ID"]).sum()
+psv_counts = asv_counts.groupby(psv_list["PSV_ID"]).sum()
 # Write the OTU count table to a file
 psv_counts.to_csv(args.output, sep="\t")
