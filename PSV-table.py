@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # Author: Mia Sungeun Lee (sungeun.lee@ec-lyon.fr)
-# Description: Converting ASV count table to OTU count table
+# Description: Converting ASV count table to PSV count table
 # Date: 20230307
 
 import argparse
