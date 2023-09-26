@@ -214,7 +214,7 @@ echo "==========================================================================
 echo "### STEP 6. translating the ASV sequences to PSV sequences ###"
 cd-hit -i AMOA-SEQ-curated.$organism.ASVs.faa -o AMOA-SEQ.$organism.PSVs.faa -c 1 -n 5
 python ASV-to-PSV.py -i AMOA-SEQ.$organism.PSVs.faa.clstr -o PSV_ASV_ID.txt
-python PSV-table.py -i AMOA-SEQ-curated.$organism.ASVs.counts.tsv -t PSV_ASV_ID.txt -o AMOA-SEQ.PSVs.counts.tsv
+python PSV-table.py -i AMOA-SEQ-curated.$organism.ASVs.counts.tsv -t PSV_ASV_ID.txt -o AMOA-SEQ.$organism.PSVs.counts.tsv
 awk '{print $2, "\t", $1}' PSV_ASV_ID.txt | sort -u > ASV_PSV_ID.txt
 sed 's/ //g' ASV_PSV_ID.txt > tmp && mv tmp ASV_PSV_ID.txt
 sed 's/ //g' ASV_PSV_ID.txt > tmp && mv tmp ASV_PSV_ID.txt
