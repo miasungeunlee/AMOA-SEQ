@@ -60,8 +60,8 @@ sh AMOA-SEQ.sh [-h help] [-e output_directory_name] [-i fastq_directory] [-f for
 # fastq file must end with either "_R1_001.fastq.gz" or "_R2_001.fastq.gz" pattern (directly from MiSeq sequencing) #
 -f: forward primer (e.g. ATGGTCTGGCTWAGACG for AOA forward primer, GGGGTTTCTACTGGTGGT for AOB forward primer and AGGNGAYTGGGAYTTCTGG for COMAMMOX forword primer)
 -r: reverse primer (e.g. GCCATCCATCTGTATGTCCA for AOA reverse primer, CCCCTCKGSAAAGCCTTCTTC for AOB reverse primer and CGGACAWABRTGAABCCCAT for COMAMMOX reverse primer)
--m: minimum read length (e.g. 200 bp for AOA, 231 bp for AOB, 204 bp for COMMAMMOX in order to overlap between R1 and R2)
--l: truncation read length (e.g. 200 bp for AOA, 250 bp for AOB and COMAMMOX)
+-m: minimum read length (e.g. 200 bp for AOA, 232 bp for AOB, 204 bp for COMMAMMOX in order to overlap between R1 and R2)
+-l: truncation read length (e.g. 200 bp for AOA, 232 bp for AOB, 204 bp for COMMAMMOX)
 -c: TRUE for AOA AMOA, just concatenating forward and reverse reads, for other AMOA, merging forward and reverse reads are possible, use FALSE option
 -t: expected merged sequence length (410 bp for AOA, 452 bp for AOB and 396 bp for COMAMMOX; these lengths are after removing the primer lengths)
 -n: number of nucleotides to be removed prior to correct translation (first nucleotide & two first nucleotides were removed from AOA & AOB ASV sequences)
@@ -79,7 +79,7 @@ sh AMOA-SEQ.sh -e COM-output -i /home/ampere/slee/AMOA-SEQ/TEST-COM-Fastq -f AGG
 # For Miseq reagent kit V2, 2 x 250 bp
 sh AMOA-SEQ.sh -e AOA-output -i /home/ampere/slee/AMOA-SEQ/TEST-AOA-Fastq -f ATGGTCTGGCTWAGACG -r GCCATCCATCTGTATGTCCA -m 200 -l 200 -c TRUE -t 410 -n 2 -o AOA
 sh AMOA-SEQ.sh -e AOB-output -i /home/ampere/slee/AMOA-SEQ/TEST-AOB-Fastq -f GGGGTTTCTACTGGTGGT -r CCCCTCKGSAAAGCCTTCTTC -m 200 -l 200 -c TRUE -t 410 -n 3 -o AOB
-sh AMOA-SEQ.sh -e COM-output -i /home/ampere/slee/AMOA-SEQ/TEST-COM-Fastq -f AGGNGAYTGGGAYTTCTGG -r CGGACAWABRTGAABCCCAT -m 204 -l 210 -c FALSE -t 396 -n 1 -o COM
+sh AMOA-SEQ.sh -e COM-output -i /home/ampere/slee/AMOA-SEQ/TEST-COM-Fastq -f AGGNGAYTGGGAYTTCTGG -r CGGACAWABRTGAABCCCAT -m 204 -l 204 -c FALSE -t 396 -n 1 -o COM
 ````
 
 ### What does AMOA-SEQ.sh script do?
