@@ -239,7 +239,9 @@ echo "### STEP 8. Aligning of the PSV sequences and curated AMOA sequences for g
 cat AMOA-SEQ.$organism.PSVs.faa ref.$organism.amoA.faa > tree.$organism.faa
 muscle -super5 tree.$organism.faa -output tree.$organism.afa
 trimal -in tree.$organism.afa -out tree.$organism.trim.afa -nogaps
-FastTree tree.$organism.trim.afa > tree.$organism.nwk
+FastTree tree.$organism.trim.afa > FastTree.$organism.nwk
+iqtree2 -s tree.$organism.trim.afa -m TEST -nt AUTO -bb 1000 -alrt 1000 -pre IQTree.$organism -T AUTO
+
 echo "### STEP 8. Phylogenetic tree generated ### "
 echo "============================================================================================";
 #####################################################
