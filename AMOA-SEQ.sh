@@ -274,8 +274,9 @@ mkdir $organism.Phylogenetic-analysis
 mkdir $organism.OTU-analysis
 rm *dmnd *R
 rm *.py
+mv *Tree* ./$organism.Phylogenetic-analysis
 mv *tree* ./$organism.Phylogenetic-analysis
-mv *ASVs* ./$organism.ASV-analysis
 mv *PSV* ./$organism.PSV-analysis
 mv *OTUs* ./$organism.OTU-analysis
+mv *ASVs* ./$organism.ASV-analysis
 #####################################################
