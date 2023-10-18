@@ -101,7 +101,7 @@ Generating annotated ASV sequences (nucleotide sequence, protein sequence) ````a
 
 **Step 7)** Annotating the PSV sequences against curated AMOA database using BLASTp. Generating diamond blastx output files (every hits and best-hit): ````blastp.output.AMOA-SEQ.$organism.PSVs.tsv````, ````besthit.blastp.output.AMOA-SEQ.$organism.PSVs.tsv````
 
-**Step 8)** Aligning of the PSV sequences ````AMOA-SEQ.{organism}.PSVs.faa```` and curated AMOA sequences ````ref.{organism}.amoA.faa```` using MUSCLE (Edgar et al. 2004) and spurious sequences or poorly aligned regions were removed using trimAI (Capella-Gutiérrez · 2009). ````tree.$organism.trim.afa```` is used for generating phylogenetic tree ````tree.{organism}.nwk```` using FastTree (Price et al. 2009).
+**Step 8)** Aligning of the PSV sequences ````AMOA-SEQ.{organism}.PSVs.faa```` and curated AMOA sequences ````ref.{organism}.amoA.faa```` using MUSCLE (Edgar et al. 2004) and spurious sequences or poorly aligned regions were removed using trimAI (Capella-Gutiérrez · 2009). ````tree.$organism.trim.afa```` is used for generating phylogenetic tree ````tree.{organism}.nwk```` using FastTree (Price et al. 2009) and IQTree (Nguyen et al. 2015).
 
 
 
@@ -177,5 +177,9 @@ Generating annotated ASV sequences (nucleotide sequence, protein sequence) ````a
 
 •	````tree.{organism}.trim.afa````: Ambiguous regions and gaps removed using trimal with -nogaps option
 
-•	````tree.{organism}.nwk````: AMOA FastTREE file in Newick format  
+•	````FastTree.{organism}.nwk````: AMOA phylogenetic tree generated using FastTREE file in Newick format  
+
+•	````IQTree.{organism}.treefile````: AMOA phylogenetic tree generated using IQTree file in Newick format 
+
+
 
