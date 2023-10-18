@@ -211,49 +211,71 @@ echo "==========================================================================
 
 #####################################################
 echo "============================================================================================";
-echo "### STEP 6. translating the ASV sequences to PSV sequences ###"
-cd-hit -i AMOA-SEQ-curated.$organism.ASVs.faa -o AMOA-SEQ.$organism.PSVs.faa -c 1 -n 5
-python ASV-to-PSV.py -i AMOA-SEQ.$organism.PSVs.faa.clstr -o PSV_ASV_ID.txt
-python PSV-table.py -i AMOA-SEQ-curated.$organism.ASVs.counts.tsv -t PSV_ASV_ID.txt -o AMOA-SEQ.$organism.PSVs.counts.tsv
+echo "### STEP 6.1. translating the ASV sequences to PSV sequences ###"
+cd-hit -i AMOA-SEQ-curated.$organism.ASVs.faa -o AMOA-SEQ.$organism.ASVs.PSVs.faa -c 1 -n 5
+python ASV-to-PSV.py -i AMOA-SEQ.$organism.ASVs.PSVs.faa.clstr -o PSV_ASV_ID.txt
+python PSV-table.py -i AMOA-SEQ-curated.$organism.ASVs.counts.tsv -t PSV_ASV_ID.txt -o AMOA-SEQ.$organism.ASVs.PSVs.counts.tsv
 awk '{print $2, "\t", $1}' PSV_ASV_ID.txt | sort -u > ASV_PSV_ID.txt
 sed 's/ //g' ASV_PSV_ID.txt > tmp && mv tmp ASV_PSV_ID.txt
 sed 's/ //g' ASV_PSV_ID.txt > tmp && mv tmp ASV_PSV_ID.txt
 awk 'BEGIN { FS="\t" }
      NR==FNR { map[$1]=$2; next }
      /^>/ { print ">" map[substr($0,2)]; next }
-     { print }' ASV_PSV_ID.txt AMOA-SEQ.$organism.PSVs.faa > tmp && mv tmp AMOA-SEQ.$organism.PSVs.faa
-echo "### STEP 6. translating the ASV sequences to PSV sequences and dereplication of PSVs, done ###"
+     { print }' ASV_PSV_ID.txt AMOA-SEQ.$organism.ASVs.PSVs.faa > tmp && mv tmp AMOA-SEQ.$organism.ASVs.PSVs.faa
+echo "### STEP 6.1. translating the ASV sequences to PSV sequences and dereplication of PSVs, done ###"
+
+echo "### STEP 6.2. translating the OTU sequences to PSV sequences ###"
+seqkit translate -f 1 AMOA-SEQ.$organism.OTUs.fa > AMOA-SEQ.$organism.OTUs.faa
+cd-hit -i AMOA-SEQ.$organism.OTUs.faa -o AMOA-SEQ.$organism.OTUs.PSVs.faa -c 1 -n 5
+python ASV-to-PSV.py -i AMOA-SEQ.$organism.OTUs.PSVs.faa.clstr -o OTUs-PSV_ASV_ID.txt
+python PSV-table.py -i AMOA-SEQ.$organism.OTUs.counts.tsv -t OTUs-PSV_ASV_ID.txt -o AMOA-SEQ.$organism.OTUs.PSVs.counts.tsv
+awk '{print $2, "\t", $1}' OTUs-PSV_ASV_ID.txt | sort -u > ASV_OTUs-PSV_ID.txt
+sed 's/ //g' ASV_OTUs-PSV_ID.txt > tmp && mv tmp ASV_OTUs-PSV_ID.txt
+sed 's/ //g' ASV_OTUs-PSV_ID.txt > tmp && mv tmp ASV_OTUs-PSV_ID.txt
+awk 'BEGIN { FS="\t" }
+     NR==FNR { map[$1]=$2; next }
+     /^>/ { print ">" map[substr($0,2)]; next }
+     { print }' ASV_OTUs-PSV_ID.txt AMOA-SEQ.$organism.OTUs.PSVs.faa > tmp && mv tmp AMOA-SEQ.$organism.OTUs.PSVs.faa
+echo "### STEP 6.2. translating the OTU sequences to PSV sequences and dereplication of PSVs, done ###"
 echo "============================================================================================";
 #####################################################
 
 #####################################################
 echo "============================================================================================";
 echo "### STEP 7. Annotating the PSV sequences against curated AMOA database using BLASTp ###"
-blastp -query AMOA-SEQ.$organism.PSVs.faa -subject ref.$organism.amoA.faa -outfmt '6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore salltitles' -out blastp.output.AMOA-SEQ.$organism.PSVs.tsv -num_threads 16 -evalue 0.00001
-awk '!x[$1]++' blastp.output.AMOA-SEQ.$organism.PSVs.tsv  > besthit.blastp.output.AMOA-SEQ.$organism.PSVs.tsv
+blastp -query AMOA-SEQ.$organism.ASVs.PSVs.faa -subject ref.$organism.amoA.faa -outfmt '6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore salltitles' -out blastp.output.AMOA-SEQ.$organism.ASVs.PSVs.tsv -num_threads 16 -evalue 0.00001
+awk '!x[$1]++' blastp.output.AMOA-SEQ.$organism.ASVs.PSVs.tsv  > besthit.blastp.output.AMOA-SEQ.$organism.ASVs.PSVs.tsv 
+blastp -query AMOA-SEQ.$organism.OTUs.PSVs.faa -subject ref.$organism.amoA.faa -outfmt '6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore salltitles' -out blastp.output.AMOA-SEQ.$organism.OTUs.PSVs.tsv -num_threads 16 -evalue 0.00001
+awk '!x[$1]++' blastp.output.AMOA-SEQ.$organism.OTUs.PSVs.tsv  > besthit.blastp.output.AMOA-SEQ.$organism.OTUs.PSVs.tsv
 echo "### STEP 7. AMOA-SEQ AMO-PSV Annotation done ###"
 echo "============================================================================================";
 #####################################################
 echo "============================================================================================";
 echo "### STEP 8. Aligning of the PSV sequences and curated AMOA sequences for generating phylogenetic tree ###"
-cat AMOA-SEQ.$organism.PSVs.faa ref.$organism.amoA.faa > tree.$organism.faa
-muscle -super5 tree.$organism.faa -output tree.$organism.afa
-trimal -in tree.$organism.afa -out tree.$organism.trim.afa -nogaps
-FastTree tree.$organism.trim.afa > FastTree.$organism.nwk
-iqtree2 -s tree.$organism.trim.afa -m TEST -nt AUTO -bb 1000 -alrt 1000 -pre IQTree.$organism -T AUTO
+cat AMOA-SEQ.$organism.ASVs.PSVs.faa ref.$organism.amoA.faa > tree.ASVs.PSVs.$organism.faa
+muscle -super5 tree.ASVs.PSVs.$organism.faa -output tree.ASVs.PSVs.$organism.afa
+trimal -in tree.ASVs.PSVs.$organism.afa -out tree.ASVs.PSVs.$organism.trim.afa -nogaps
+FastTree tree.ASVs.PSVs.$organism.trim.afa > FastTree.ASVs.PSVs.$organism.nwk
+iqtree2 -s tree.ASVs.PSVs.$organism.trim.afa -m TEST -nt AUTO -bb 1000 -alrt 1000 -pre IQTree.ASVs.PSVs.$organism -T AUTO
+
+cat AMOA-SEQ.$organism.OTUs.PSVs.faa ref.$organism.amoA.faa > tree.OTUs.PSVs.$organism.faa
+muscle -super5 tree.ASVs.OTUs.$organism.faa -output tree.OTUs.PSVs.$organism.afa
+trimal -in tree.ASVs.OTUs.$organism.afa -out tree.OTUs.PSVs.$organism.trim.afa -nogaps
+FastTree tree.ASVs.OTUs.$organism.trim.afa > FastTree.OTUs.PSVs.$organism.nwk
+iqtree2 -s tree.ASVs.OTUs.$organism.trim.afa -m TEST -nt AUTO -bb 1000 -alrt 1000 -pre IQTree.OTUs.PSVs.$organism -T AUTO
 
 echo "### STEP 8. Phylogenetic tree generated ### "
 echo "============================================================================================";
 #####################################################
-rm ID ASV-ID Annotated-ASV-ID ID-Taxa OTU-ID ASV_OTU_ID.txt
+rm ID ASV-ID Annotated-ASV-ID ID-Taxa OTU-ID ASV_OTU_ID.txt ASV_PSV_ID.txt
 mkdir $organism.ASV-analysis
 mkdir $organism.PSV-analysis
 mkdir $organism.Phylogenetic-analysis
 mkdir $organism.OTU-analysis
 rm *dmnd *R
 rm *.py
+mv *tree* ./$organism.Phylogenetic-analysis
 mv *ASVs* ./$organism.ASV-analysis
 mv *PSV* ./$organism.PSV-analysis
-mv *tree* ./$organism.Phylogenetic-analysis
 mv *OTUs* ./$organism.OTU-analysis
 #####################################################
