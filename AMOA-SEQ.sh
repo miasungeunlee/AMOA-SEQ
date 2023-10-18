@@ -215,6 +215,7 @@ echo "### STEP 6.1. translating the ASV sequences to PSV sequences ###"
 cd-hit -i AMOA-SEQ-curated.$organism.ASVs.faa -o AMOA-SEQ.$organism.ASVs.PSVs.faa -c 1 -n 5
 python ASV-to-PSV.py -i AMOA-SEQ.$organism.ASVs.PSVs.faa.clstr -o PSV_ASV_ID.txt
 python OTU-table.py -i AMOA-SEQ-curated.$organism.ASVs.counts.tsv -t PSV_ASV_ID.txt -o AMOA-SEQ.$organism.ASVs.PSVs.counts.tsv
+sed 's/OTU_ID/PSV_ID/g' AMOA-SEQ.$organism.ASVs.PSVs.counts.tsv > tmp && mv tmp AMOA-SEQ.$organism.ASVs.PSVs.counts.tsv
 awk '{print $2, "\t", $1}' PSV_ASV_ID.txt | sort -u > ASV_PSV_ID.txt
 sed 's/ //g' ASV_PSV_ID.txt > tmp && mv tmp ASV_PSV_ID.txt
 sed 's/ //g' ASV_PSV_ID.txt > tmp && mv tmp ASV_PSV_ID.txt
@@ -229,6 +230,7 @@ seqkit translate -f 1 AMOA-SEQ.$organism.OTUs.fa > AMOA-SEQ.$organism.OTUs.faa
 cd-hit -i AMOA-SEQ.$organism.OTUs.faa -o AMOA-SEQ.$organism.OTUs.PSVs.faa -c 1 -n 5
 python ASV-to-PSV.py -i AMOA-SEQ.$organism.OTUs.PSVs.faa.clstr -o OTUs-PSV_ASV_ID.txt
 python OTU-table.py -i AMOA-SEQ.$organism.OTUs.counts.tsv -t OTUs-PSV_ASV_ID.txt -o AMOA-SEQ.$organism.OTUs.PSVs.counts.tsv
+sed 's/OTU_ID/PSV_ID/g' AMOA-SEQ.$organism.OTUs.PSVs.counts.tsv > tmp && mv tmp AMOA-SEQ.$organism.OTUs.PSVs.counts.tsv
 awk '{print $2, "\t", $1}' OTUs-PSV_ASV_ID.txt | sort -u > ASV_OTUs-PSV_ID.txt
 sed 's/ //g' ASV_OTUs-PSV_ID.txt > tmp && mv tmp ASV_OTUs-PSV_ID.txt
 sed 's/ //g' ASV_OTUs-PSV_ID.txt > tmp && mv tmp ASV_OTUs-PSV_ID.txt
