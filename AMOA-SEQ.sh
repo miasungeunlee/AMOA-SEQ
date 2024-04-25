@@ -192,7 +192,7 @@ echo "==========================================================================
 echo "### STEP 5. ASV clustering into OTUs and generating OTU count table ###"
 cd-hit-est -i AMOA-SEQ-curated.$organism.ASVs.fa -o AMOA-SEQ.$organism.OTUs.fa -c 0.97 -n 5
 python3 ASV-to-OTU.py -i AMOA-SEQ.$organism.OTUs.fa.clstr -o OTU_ASV_ID.txt
-python3 OTU-table.py -i AMOA-SEQ-curated.$organism.ASVs.counts.tsv -t OTU_ASV_ID.txt -o AMOA-SEQ.$organism.OTUs.counts.tsv
+python OTU-table.py -i AMOA-SEQ-curated.$organism.ASVs.counts.tsv -t OTU_ASV_ID.txt -o AMOA-SEQ.$organism.OTUs.counts.tsv
 awk '{print $2, "\t", $1}' OTU_ASV_ID.txt | sort -u > ASV_OTU_ID.txt
 sed 's/ //g' ASV_OTU_ID.txt > tmp && mv tmp ASV_OTU_ID.txt
 sed 's/ //g' ASV_OTU_ID.txt > tmp && mv tmp ASV_OTU_ID.txt
