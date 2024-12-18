@@ -1,14 +1,6 @@
+
 ````
-####################################
-###     _   _   _____   _____    ### 
-###    | | | | |  _  | |  _  |   ###
-###    | |_| | | |_| | | |_| |   ###
-###    |  _  | |  ___| |  ___|   ###
-###    | | | | | |     | |       ###
-###    |_| |_| |_|     |_|       ###
-####################################
-````
-**HPP** is an automatic host prediction tool from virus ... (Callahan et al. 2016). **AMOA-SEQ** utilizes non-redundant AMOA sequences from NCBI, IMG-JGI databases, as well as curated archaeal, bacterial and comammox AMOA sequences from Alves et al. 2018, Aigle et al. 2019, Lee et al. 2023 (this study, not published), Palomo et al 2022 for taxonomic and phylogenetic analyses, using an expert-guided approach to analyze diverse AMOA sequences. 
+**HPP** applies DADA2 tool to generate amplicon sequence variants (ASVs), enabling a higher-resolution alternative to conventional operational taxonomic units (OTUs), which records the exact number of times a specific amplicon sequence variant is observed in each sample. Additionally, DADA2 incorporates quality information into its error model, making the algorithm more resilient to lower quality sequences (Callahan et al. 2016). **AMOA-SEQ** utilizes non-redundant AMOA sequences from NCBI, IMG-JGI databases, as well as curated archaeal, bacterial and comammox AMOA sequences from Alves et al. 2018, Aigle et al. 2019, Lee et al. 2023 (this study, not published), Palomo et al 2022 for taxonomic and phylogenetic analyses, using an expert-guided approach to analyze diverse AMOA sequences. 
 
 -	work with AMOA amplicon sequencing (Miseq reagent kit V2 (500-cycles), 2 x 250 bp and V3 (500-cycles), 2 x 300 bp) with archaeal, bacterial and comammox amoA gene amplified using the Illumina-adaptor linked primer sets: CrenamoA23F/CrenamoA616R (Tourna et al. 2008), AmoA1F/AmoA2R (Rotthauwe et al. 1997), and comamoA-F/comamoA-R (Zhao et al. 2018)
 
@@ -21,18 +13,25 @@ See more details in the publication (hopefully publish soon!).
 
 ## Installation with Conda
 ````
-conda create -y -n HHP -c bioconda kaiju prodigal diamond
-conda activate HHP
+conda create -y -n AMOA-SEQ -c bioconda seqkit fasttree muscle blast diamond trimal diamond=0.9.19 cd-hit cutadapt iqtree
+source activate AMOA-SEQ
+pip install biopython
+pip install pandas
 ````
 
-## Download HPP directory
+## DADA2 tool installation 
 ````
-git clone https://github.com/miasungeunlee/HPP.git
-cd HPP
-chmod u+x HPP.sh # make the script executable
+https://benjjneb.github.io/dada2/dada-installation.html
 ````
 
-## Download databases
+## Download AMOA-SEQ directory
+````
+git clone https://github.com/miasungeunlee/AMOA-SEQ.git
+cd AMOA-SEQ
+chmod u+x AMOA-SEQ.sh # make the script executable
+````
+
+## AMOA sequence databases
 •	````AMO_database.faa````: all AMOA sequences downloaded from JGI IMG (https://img.jgi.doe.gov/) and NCBI (https://www.ncbi.nlm.nih.gov/). List of accessions and detail of the gene set were shown in AMO_database.tsv 
 
 •	````ref.AOA.amoA.faa````: curated archaeal amoA sequences with defined lineage from Alves et al. 2018
@@ -43,10 +42,8 @@ chmod u+x HPP.sh # make the script executable
 
 ## Quick run
 ````
-conda activate HHP
-sh HHP.sh [-h help] [-d database_directorty] [-i fasta_file] [-w working directory] [-t threads] 
-
-sh HHP.sh -i virus-genome.fasta -d /store/ampere/gnicol/test-database -w /store/ampere/gnicol/HPP_out -t 16
+source activate AMOA-SEQ
+sh AMOA-SEQ.sh [-h help] [-e output_directory_name] [-i fastq_directory] [-f forward_primer] [-r reverse_primer] [-m minimum_read_length] [-l truncation_read_length] [-c just_concatenating_option] [-t expected merged sequence_length] [-t expected_merged_sequence_length] [-n number_nucleotide] [-o AO_type]
 
 ### option variable explanation ###
 -h: help
