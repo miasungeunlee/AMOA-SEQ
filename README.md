@@ -1,6 +1,14 @@
-
 ````
-**HPP** applies DADA2 tool to generate amplicon sequence variants (ASVs), enabling a higher-resolution alternative to conventional operational taxonomic units (OTUs), which records the exact number of times a specific amplicon sequence variant is observed in each sample. Additionally, DADA2 incorporates quality information into its error model, making the algorithm more resilient to lower quality sequences (Callahan et al. 2016). **AMOA-SEQ** utilizes non-redundant AMOA sequences from NCBI, IMG-JGI databases, as well as curated archaeal, bacterial and comammox AMOA sequences from Alves et al. 2018, Aigle et al. 2019, Lee et al. 2023 (this study, not published), Palomo et al 2022 for taxonomic and phylogenetic analyses, using an expert-guided approach to analyze diverse AMOA sequences. 
+############################################################################################
+#     __      ___    ___     ____        __               _______    _______    _______    #
+#    /  \    |   \  /   |  /  __  \     /  \             / _______\ |  _____|  / ______ \  #
+#   / /\ \   | |\ \/ /| | / /    \ \   / /\ \     ____  | |_______  | |_____  | |______| | #
+#  / /__\ \  | | \__/ | || |     | |  / /__\ \   |____|  \______  \ |  _____|  \_______  | #
+# / ______ \ | |      | | \ \ __ / / / ______ \          _______| | | |_____          |  | #
+#/_/      \_\|_|      |_|  \ ____ / /_/      \_\         \_______/  |_______|         |__| #
+############################################################################################
+````
+**AMO-SEQ** applies DADA2 tool to generate amplicon sequence variants (ASVs), enabling a higher-resolution alternative to conventional operational taxonomic units (OTUs), which records the exact number of times a specific amplicon sequence variant is observed in each sample. Additionally, DADA2 incorporates quality information into its error model, making the algorithm more resilient to lower quality sequences (Callahan et al. 2016). **AMOA-SEQ** utilizes non-redundant AMOA sequences from NCBI, IMG-JGI databases, as well as curated archaeal, bacterial and comammox AMOA sequences from Alves et al. 2018, Aigle et al. 2019, Lee et al. 2023 (this study, not published), Palomo et al 2022 for taxonomic and phylogenetic analyses, using an expert-guided approach to analyze diverse AMOA sequences. 
 
 -	work with AMOA amplicon sequencing (Miseq reagent kit V2 (500-cycles), 2 x 250 bp and V3 (500-cycles), 2 x 300 bp) with archaeal, bacterial and comammox amoA gene amplified using the Illumina-adaptor linked primer sets: CrenamoA23F/CrenamoA616R (Tourna et al. 2008), AmoA1F/AmoA2R (Rotthauwe et al. 1997), and comamoA-F/comamoA-R (Zhao et al. 2018)
 
